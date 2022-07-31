@@ -9,46 +9,54 @@ const People = ({route}) => {
     <View style = {styles.main}>
       <View>
         <View style = {styles.bottom}>
-            <TouchableOpacity onPress = {() => 
+          <TouchableOpacity 
+            style = {styles.top}
+            onPress = {() => 
             navigation.navigate("Rooms", { 
                 id: id,
                 className: className, 
                 section: section, 
                 subjectName: subjectName 
             })}
-            >
-            <MaterialIcons name = "arrow-back" size = {30} color = "#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress = {() => 
-                navigation.navigate("Server", { 
-                    id: id,
-                    className: className, 
-                    section: section, 
-                    subjectName: subjectName 
-                })}
-            >
-                <MaterialIcons name = "description" size = {30} color = "#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress = {() => 
-                navigation.navigate("Participants", { 
-                    id: id,
-                    className: className, 
-                    section: section, 
-                    subjectName: subjectName 
-                })}
-            >
-                <MaterialIcons name = "group" size = {30} color = "#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress = {() => 
-                navigation.navigate("Room Settings", { 
-                    id: id,
-                    className: className, 
-                    section: section, 
-                    subjectName: subjectName 
-                })}
-            >
-                <MaterialIcons name = "settings" size = {30} color = "#fff" />
-            </TouchableOpacity>
+          >
+            <MaterialIcons name = "arrow-back" size = {30} color = "#0c002b" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style = {styles.top}
+            onPress = {() => 
+            navigation.navigate("Server", { 
+                id: id,
+                className: className, 
+                section: section, 
+                subjectName: subjectName 
+            })}
+          >
+            <MaterialIcons name = "description" size = {30} color = "#0c002b" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style = {styles.top}
+            onPress = {() => 
+            navigation.navigate("Participants", { 
+                id: id,
+                className: className, 
+                section: section, 
+                subjectName: subjectName 
+            })}
+          >
+            <MaterialIcons name = "group" size = {30} color = "#0c002b" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style = {styles.top}
+            onPress = {() => 
+            navigation.navigate("Room Settings", { 
+                id: id,
+                className: className, 
+                section: section, 
+                subjectName: subjectName 
+            })}
+          >
+            <MaterialIcons name = "settings" size = {30} color = "#0c002b" />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -101,5 +109,10 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         margin: 10,
         padding: 10
+      },
+      top: {
+        backgroundColor: "#fff",
+        padding: 5,
+        borderRadius: 10
       }
 })

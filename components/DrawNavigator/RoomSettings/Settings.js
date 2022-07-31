@@ -39,7 +39,9 @@ const Settings = ({route}) => {
     <ScrollView style = {styles.main}>
     <View>
       <View style = {styles.bottom}>
-        <TouchableOpacity onPress = {() => 
+        <TouchableOpacity 
+          style = {styles.top}
+          onPress = {() => 
           navigation.navigate("Rooms", { 
               id: id,
               className: className, 
@@ -47,9 +49,11 @@ const Settings = ({route}) => {
               subjectName: subjectName 
           })}
         >
-          <MaterialIcons name = "arrow-back" size = {30} color = "#fff" />
+          <MaterialIcons name = "arrow-back" size = {30} color = "#0c002b" />
         </TouchableOpacity>
-        <TouchableOpacity onPress = {() => 
+        <TouchableOpacity 
+          style = {styles.top}
+          onPress = {() => 
           navigation.navigate("Server", { 
               id: id,
               className: className, 
@@ -57,9 +61,11 @@ const Settings = ({route}) => {
               subjectName: subjectName 
           })}
         >
-          <MaterialIcons name = "description" size = {30} color = "#fff" />
+          <MaterialIcons name = "description" size = {30} color = "#0c002b" />
         </TouchableOpacity>
-        <TouchableOpacity onPress = {() => 
+        <TouchableOpacity 
+          style = {styles.top}
+          onPress = {() => 
           navigation.navigate("Participants", { 
               id: id,
               className: className, 
@@ -67,9 +73,11 @@ const Settings = ({route}) => {
               subjectName: subjectName 
           })}
         >
-          <MaterialIcons name = "group" size = {30} color = "#fff" />
+          <MaterialIcons name = "group" size = {30} color = "#0c002b" />
         </TouchableOpacity>
-        <TouchableOpacity onPress = {() => 
+        <TouchableOpacity 
+          style = {styles.top}
+          onPress = {() => 
           navigation.navigate("Room Settings", { 
               id: id,
               className: className, 
@@ -77,7 +85,7 @@ const Settings = ({route}) => {
               subjectName: subjectName 
           })}
         >
-          <MaterialIcons name = "settings" size = {30} color = "#fff" />
+          <MaterialIcons name = "settings" size = {30} color = "#0c002b" />
         </TouchableOpacity>
       </View>
     </View>
@@ -246,8 +254,9 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         marginLeft: 10
     },
-    id: {
-        color: "#fff",
-
+    top: {
+      backgroundColor: "#fff",
+      padding: 5,
+      borderRadius: 10
     }
 })

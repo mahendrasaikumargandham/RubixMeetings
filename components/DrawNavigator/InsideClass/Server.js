@@ -21,7 +21,9 @@ const Server = ({route}) => {
     <View style = {styles.main}>
       <View>
         <View style = {styles.bottom}>
-          <TouchableOpacity onPress = {() => 
+          <TouchableOpacity 
+            style = {styles.top}
+            onPress = {() => 
             navigation.navigate("Rooms", { 
                 id: id,
                 className: className, 
@@ -29,37 +31,43 @@ const Server = ({route}) => {
                 subjectName: subjectName 
             })}
           >
-            <MaterialIcons name = "arrow-back" size = {30} color = "#fff" />
+            <MaterialIcons name = "arrow-back" size = {30} color = "#0c002b" />
           </TouchableOpacity>
-          <TouchableOpacity onPress = {() => 
+          <TouchableOpacity 
+            style = {styles.top}
+            onPress = {() => 
             navigation.navigate("Server", { 
-              id: id,
-              className: className, 
-              section: section, 
-              subjectName: subjectName 
+                id: id,
+                className: className, 
+                section: section, 
+                subjectName: subjectName 
             })}
           >
-            <MaterialIcons name = "description" size = {30} color = "#fff" />
+            <MaterialIcons name = "description" size = {30} color = "#0c002b" />
           </TouchableOpacity>
-          <TouchableOpacity onPress = {() => 
+          <TouchableOpacity 
+            style = {styles.top}
+            onPress = {() => 
             navigation.navigate("Participants", { 
-              id: id,
-              className: className, 
-              section: section, 
-              subjectName: subjectName 
+                id: id,
+                className: className, 
+                section: section, 
+                subjectName: subjectName 
             })}
           >
-            <MaterialIcons name = "group" size = {30} color = "#fff" />
+            <MaterialIcons name = "group" size = {30} color = "#0c002b" />
           </TouchableOpacity>
-          <TouchableOpacity onPress = {() => 
+          <TouchableOpacity 
+            style = {styles.top}
+            onPress = {() => 
             navigation.navigate("Room Settings", { 
-              id: id,
-              className: className, 
-              section: section, 
-              subjectName: subjectName 
+                id: id,
+                className: className, 
+                section: section, 
+                subjectName: subjectName 
             })}
           >
-            <MaterialIcons name = "settings" size = {30} color = "#fff" />
+            <MaterialIcons name = "settings" size = {30} color = "#0c002b" />
           </TouchableOpacity>
         </View>
       </View>
@@ -104,7 +112,7 @@ const styles = StyleSheet.create({
   },
   box: {
     backgroundColor: "rgb(0, 89, 178)",
-    padding: 15,
+    padding: 10,
     margin: 10,
     borderRadius: 10,
   },
@@ -168,5 +176,10 @@ const styles = StyleSheet.create({
   lottieView: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  top: {
+    backgroundColor: "#fff",
+    padding: 5,
+    borderRadius: 10
   }
 })
