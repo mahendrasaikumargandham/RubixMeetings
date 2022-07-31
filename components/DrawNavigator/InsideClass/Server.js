@@ -1,72 +1,93 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Share, StyleSheet, Text, Touchable, View } from 'react-native'
 import React, { useState } from 'react'
-import { ScrollView } from 'react-native-gesture-handler';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import People from '../../TabNavigator/Participants/People';
+import LottieView from "lottie-react-native";
 
-const Tab = createBottomTabNavigator();
-
-function VideoScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "#0c002b", height: "100%"  }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "#0c002b", height: "100%"  }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
-const Server = () => {
-
+const Server = ({route}) => {
+  const { id, className, section, subjectName } = route.params;
   const navigation = useNavigation();
+  const inputValue = `${id}`
+  console.log(inputValue)
+  const ShareMessage = () => {
+    Share.share({
+        message: inputValue.toString()
+    })
+    .then((result) => console.log(result))
+  }
 
   return (
-    <View style = {styles.main}> 
-      <Tab.Navigator
-        screenOptions={{
-          headerShown: false,
-          tabBarStyle: {backgroundColor: "#0c002b", height: "12%"},
-          tabBarInactiveTintColor: "#fff",
-          tabBarActiveTintColor: "rgb(0, 89, 178)",
-          tabBarLabelStyle: {fontSize: 12, marginBottom: "10%"}
-        }}
+    <View style = {styles.main}>
+      <View>
+        <View style = {styles.bottom}>
+          <TouchableOpacity onPress = {() => 
+            navigation.navigate("Rooms", { 
+                id: id,
+                className: className, 
+                section: section, 
+                subjectName: subjectName 
+            })}
+          >
+            <MaterialIcons name = "arrow-back" size = {30} color = "#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress = {() => 
+            navigation.navigate("Server", { 
+              id: id,
+              className: className, 
+              section: section, 
+              subjectName: subjectName 
+            })}
+          >
+            <MaterialIcons name = "description" size = {30} color = "#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress = {() => 
+            navigation.navigate("Participants", { 
+              id: id,
+              className: className, 
+              section: section, 
+              subjectName: subjectName 
+            })}
+          >
+            <MaterialIcons name = "group" size = {30} color = "#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress = {() => 
+            navigation.navigate("Room Settings", { 
+              id: id,
+              className: className, 
+              section: section, 
+              subjectName: subjectName 
+            })}
+          >
+            <MaterialIcons name = "settings" size = {30} color = "#fff" />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style = {styles.box}>
+        <Text style = {styles.className}>{className} {section}</Text>
+        <Text style = {styles.subjectName}>{subjectName}</Text>
+      </View>
+      <TouchableOpacity 
+        style = {styles.code}
+        onPress = {() => ShareMessage()}
       >
-        <Tab.Screen 
-          name="description" 
-          component={VideoScreen}
-          options = {{
-            tabBarIcon: ({ color}) => (
-              <MaterialIcons name = "description" size = {27} color = {color} />
-            )
-          }}
+        <MaterialIcons name = "share" size = {25} color = "#0c002b" />
+        <Text style = {styles.textCode}>Share Code</Text> 
+      </TouchableOpacity>
+      <View style = "lottieView">
+        <LottieView 
+          style = {styles.lottie}
+          source = {require("../../../assets/json/server.json")}
+          autoPlay
+          loop
         />
-        <Tab.Screen 
-          name="People" 
-          component={People}
-          options = {{
-            tabBarIcon: ({ color}) => (
-              <MaterialIcons name = "group" size = {27} color = {color} />
-            )
-          }}
-        />
-        <Tab.Screen 
-          name="Settings" 
-          component={SettingsScreen} 
-          options = {{
-            tabBarIcon: ({ color}) => (
-              <MaterialIcons name = "settings" size = {27} color = {color} />
-            )
-          }}
-        />
-      </Tab.Navigator>
+      </View>
+      <View style = {styles.view}>
+        <TouchableOpacity style = {styles.start}>
+          <MaterialIcons name = "meeting-room" size = {30} color = "#fff" />
+          <Text style = {styles.meetingText}>Start Meeting</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   )
 }
@@ -74,49 +95,78 @@ const Server = () => {
 export default Server
 
 const styles = StyleSheet.create({
-  code: {
-    marginTop: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row"
-  },
-  servercode: {
-    color: "#fff",
-    fontSize: 17
-  },
-  meet: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: "#fff",
-    borderWidth: 3,
-    margin: 20,
-    padding: 10,
-    borderRadius: 10,
-  },
-  fix: {
-    flexDirection: "row",
-    alignItems: "center",
-    margin: 10,
-  },
-  memname: {
-    marginLeft: 20,
-    fontSize: 20,
-    fontSize: 20,
-    fontWeight: "900",
-    color: "#fff"
-  },
-  id: {
-    backgroundColor: "#fff",
-    padding: 10, 
-    margin: 10,
-    borderRadius: 10,
-    color: "#0c002b"
-  },
   main: {
     backgroundColor: "#0c002b",
     height: "100%"
   },
   image: {
     color: "#fff"
+  },
+  box: {
+    backgroundColor: "rgb(0, 89, 178)",
+    padding: 15,
+    margin: 10,
+    borderRadius: 10,
+  },
+  code: {
+    backgroundColor: "#fff",
+    padding: 10,
+    margin: 10,
+    marginTop: 5,
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  textCode: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "800",
+    marginLeft: 10
+  },
+  className: {
+    fontSize: 30,
+    textAlign: "center",
+    color: "#fff",
+    fontWeight: "800"
+  },
+  subjectName: {
+    fontSize: 20,
+    textAlign: "center",
+    color: "#fff",
+    fontWeight: "700"
+  },
+  bottom: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    margin: 10,
+    padding: 10
+  },
+  start: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "70%",
+    backgroundColor: "rgb(0, 89, 178)",
+    padding: 10,
+    borderRadius: 10,
+  },
+  view: {
+    alignItems: "center",
+  },
+  meetingText: {
+    fontSize: 17,
+    color: "#fff",
+    marginLeft: 10,
+    fontWeight: "700"
+  },
+  lottie: {
+    height: 250,
+    alignSelf: "center"
+  },
+  lottieView: {
+    alignItems: "center",
+    justifyContent: "center",
   }
 })

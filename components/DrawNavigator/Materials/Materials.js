@@ -2,10 +2,19 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { TouchableOpacity } from 'react-native';
+import LottieView from "lottie-react-native";
 
 const Materials = () => {
   return (
     <View style = {styles.main}>
+      <View>
+            <LottieView 
+                style = {{ height: 200, alignSelf: "center" }}
+                source = {require("../../../assets/json/books.json")}
+                autoPlay
+                loop
+            />
+        </View>
       <View style = {styles.box}>
         <TouchableOpacity>
           <View style = {styles.content}>

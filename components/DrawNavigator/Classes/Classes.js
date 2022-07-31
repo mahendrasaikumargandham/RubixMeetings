@@ -8,6 +8,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
 import { Provider } from 'react-native-paper';
+import LottieView from "lottie-react-native";
+
 
 const Classes = () => {
 
@@ -46,8 +48,9 @@ const Classes = () => {
     navigation.navigate("Join a Room");
   }
 
-  const handleRedirect = () => {
-    navigation.navigate("Server");
+  const handleRedirect = (item) => {
+    console.log(item);
+    navigation.navigate("Server", { item });
   }
 
   return (
@@ -63,6 +66,14 @@ const Classes = () => {
                 <Text style = {styles.buttons}>Join Room</Text>
               </TouchableOpacity> 
             </View>
+            <View>
+              <LottieView 
+                style = {{ alignSelf: "center", height: 200 }}
+                source = {require("../../../assets/json/classes.json")}
+                autoPlay
+                loop
+              />
+            </View>
             <View style = {{ alignItems: "center", marginTop: 10 }}></View>
             <FlatList
               data = {info}
@@ -70,7 +81,13 @@ const Classes = () => {
               renderItem = {({item}) => (
                 <TouchableOpacity
                   style = {styles.box}
-                  onPress = {handleRedirect}
+                  onPress = {() => 
+                    navigation.navigate("Server", { 
+                      id: item.id,
+                      className: item.className, 
+                      section: item.section, 
+                      subjectName: item.subjectName 
+                    })}
                 >
                   <View style = {styles.view}>
                     <Text style = {styles.heading}>{item.className} {item.section}</Text>

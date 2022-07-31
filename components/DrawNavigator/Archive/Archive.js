@@ -30,7 +30,7 @@ const Archive = () => {
                   <Text style = {styles.heading}>{item.className} {item.section}</Text>
                   <Text>
                     <TouchableOpacity 
-                      onPress = {() => removeClass(item)}
+                      // onPress = {() => removeClass(item)}
                     >
                       <MaterialIcons name = "unarchive" size = {25} color = "white" /> 
                     </TouchableOpacity>
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   box: {
-    backgroundColor: "rgb(0, 89, 178)",
+    backgroundColor: "rgb(80, 30, 180)",
     padding: 15,
     margin: 10,
     borderRadius: 10,

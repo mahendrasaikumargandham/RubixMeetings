@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-
+import LottieView from 'lottie-react-native';
 const DashBoard = () => {
     const navigation = useNavigation();
     const handleRooms = () => {
@@ -13,10 +13,14 @@ const DashBoard = () => {
     }
     return (
         <View style = {styles.container}>
-            <Image 
-                source={require('../../../assets/images/meet.png')} 
-                style = {styles.image}
-            />
+            <View>
+                <LottieView 
+                    style = {styles.image}
+                    source = {require('../../../assets/json/dashboard.json')}
+                    autoPlay 
+                    loop
+                />
+            </View>
             <Text style = {styles.caption}>The top tier online video conferencing app</Text>
             <View style = {styles.meeting}>
                 <TouchableOpacity  onPress = {handleRooms}>
@@ -42,8 +46,9 @@ const styles = StyleSheet.create({
         height: "100%",
     },
     image: {
-        width: "100%",
-        height: 200,
+        height: 250,
+        alignSelf: "center",
+
     },
     meeting: {
         margin: "5%",
@@ -61,10 +66,10 @@ const styles = StyleSheet.create({
     caption: {
         fontSize: 20,
         fontWeight: "900",
-        marginBottom: "10%",
+        marginBottom: "7%",
         textAlign: "center",
         color: "#fff",
-        marginTop: "10%"
+        marginTop: "5%"
     },
     rooms: {
         margin: "5%",

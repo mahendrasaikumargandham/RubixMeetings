@@ -14,9 +14,11 @@ import Profile from '../../components/DrawNavigator/Profile/Profile';
 import DashBoard from '../../components/DrawNavigator/Home/DashBoard';
 import Meeting from '../../components/DrawNavigator/Meeting/Meeting';
 import CustomDraw from '../../components/DrawNavigator/custom/CustomDraw';
-import Settings from '../../components/DrawNavigator/Settings/Settings';
+import SettingsScreen from '../../components/DrawNavigator/Settings/SettingsScreen';
 import About from '../../components/DrawNavigator/About/About';
 import Contact from '../../components/DrawNavigator/Contact/Contact';
+import People from '../../components/DrawNavigator/People/People';
+import Settings from '../../components/DrawNavigator/RoomSettings/Settings';
 
 const Drawer = createDrawerNavigator();
 
@@ -87,7 +89,7 @@ const HomeScreen = () => {
         />
       <Drawer.Screen 
         name="Settings" 
-        component = {Settings} 
+        component = {SettingsScreen} 
         options = {{
           drawerIcon: ({color}) => (
             <MaterialIcons name = "settings" size = {30} color = {color} />
@@ -117,6 +119,8 @@ const HomeScreen = () => {
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Join a Room" component = {JoinClass} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Server" component = {Server} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Emergency Meeting" component = {Meeting} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Participants" component = {People} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Room Settings" component = {Settings} />
     </Drawer.Navigator>
   )
 }

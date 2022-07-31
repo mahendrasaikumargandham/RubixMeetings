@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { authentication } from '../../firebase/firebase-config';
+import LottieView from "lottie-react-native";
 
 const RegisterScreen = () => {
     
@@ -40,6 +41,14 @@ const RegisterScreen = () => {
     <ScrollView style = {styles.main}>
         <View> 
             <Text style = {styles.rubix}>Rubix Meetings</Text>
+        </View>
+        <View>
+            <LottieView 
+                style = {styles.lottie}
+                source = {require("../../assets/json/register.json")}
+                autoPlay
+                loop
+            />
         </View>
         <KeyboardAvoidingView
             style = {styles.container}
@@ -103,7 +112,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '10%',
     },
     inputContainer: {
         width: '80%',
@@ -157,5 +165,9 @@ const styles = StyleSheet.create({
     },
     main: {
         backgroundColor: "#0c002b"
+    },
+    lottie: {
+        alignSelf: "center",
+        height: 200
     }
 })

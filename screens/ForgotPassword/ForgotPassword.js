@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { authentication } from '../../firebase/firebase-config';
 import { useNavigation } from '@react-navigation/native';
+import LottieView from "lottie-react-native";
 
 const ForgotPassword = () => {
 
@@ -20,6 +21,14 @@ const ForgotPassword = () => {
     <ScrollView style = {styles.main}>
         <View> 
             <Text style = {styles.rubix}>Rubix Meetings</Text>
+        </View>
+        <View>
+            <LottieView 
+                style = {{ alignSelf: "center", height: 200}}
+                source = {require("../../assets/json/forgot.json")}
+                autoPlay
+                loop
+            />
         </View>
         <KeyboardAvoidingView
             style = {styles.container}
@@ -41,7 +50,7 @@ const ForgotPassword = () => {
                 >
                     <Text style = {styles.buttonText}>Reset</Text>
                 </TouchableOpacity>
-                <View><Text style = {styles.new}>If you have an account, then reset mail is sent to your registered email. Check your spam as well.</Text></View>
+                <View style  = {{ width: "150%"}}><Text style = {styles.new}>If you have an account, then reset mail is sent to your registered email. Check your spam as well.</Text></View>
                 <TouchableOpacity
                     onPress = {redirect}
                     style = {[styles.button, styles.buttonOutline]}
@@ -58,7 +67,7 @@ export default ForgotPassword
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "30%",
+        marginTop: "20%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',
@@ -68,7 +77,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '15%',
     },
     inputContainer: {
         width: '80%',
@@ -113,7 +121,8 @@ const styles = StyleSheet.create({
     },
     new: {
         marginTop: 15,
-        color: "#fff"
+        color: "#fff",
+        textAlign: "center"
     }, 
     main: {
         backgroundColor: "#0c002b"

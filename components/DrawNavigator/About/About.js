@@ -3,6 +3,7 @@ import React from 'react';
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import LottieView from "lottie-react-native";
 
 const About = () => {
   return (
@@ -10,6 +11,14 @@ const About = () => {
       <View style = {styles.main}>
         <View>
             <Text style = {styles.head}>Rubix Coders</Text>
+        </View>
+        <View>
+            <LottieView 
+                style = {{ height: 200, alignSelf: "center" }}
+                source = {require("../../../assets/json/about.json")}
+                autoPlay
+                loop
+            />
         </View>
         <View style = {styles.team}>
             <Text style = {styles.name}>Akhila Reddy Biyyam</Text>
