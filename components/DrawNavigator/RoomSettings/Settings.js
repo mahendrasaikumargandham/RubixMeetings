@@ -4,7 +4,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import LottieView from "lottie-react-native";
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, doc, deleteDoc } from 'firebase/firestore';
 import { authentication, db } from "../../../firebase/firebase-config";
 
 
@@ -14,6 +14,7 @@ const Settings = ({route}) => {
     const [classname, setClassName] = useState('');
     const [sectionId, setSectionId] = useState('');
     const [subjectname, setSubjectName] = useState('');
+
     const handleSubmit = async (id) => {
       const idRef = doc(db, `/users/${authentication.currentUser?.uid}/Rooms`, `${id}`);
       const payload = (idRef, {
@@ -34,7 +35,18 @@ const Settings = ({route}) => {
         setSubjectName('')
       })
       .catch((error) => console.log(error));
-  }
+    }
+
+    const handleDelete = async (id) => {
+      await deleteDoc(doc(db, `/users/${authentication.currentUser?.uid}/Rooms`, `${id}`))
+      .then(() => {
+        console.log("delete successfully")
+      })
+      .then(() => {
+        navigation.navigate("Rooms");
+      })
+      .catch((error) => console.log(error.message))
+    }
   return (
     <ScrollView style = {styles.main}>
     <View>
@@ -137,9 +149,12 @@ const Settings = ({route}) => {
                 </TouchableOpacity> 
             </View>
             <View>
-                <TouchableOpacity style = {styles.leave}>
-                    <MaterialIcons name = "logout" size = {30} color = "#fff" />
-                    <Text style = {styles.leaveText}>Leave the Room</Text>
+                <TouchableOpacity 
+                  style = {styles.leave}
+                  onPress = {() => handleDelete(id)}
+                >
+                    <MaterialIcons name = "delete-outline" size = {30} color = "#fff" />
+                    <Text style = {styles.leaveText}>Delete Room</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
@@ -243,7 +258,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "rgb(0, 89, 178)",
+        backgroundColor: "rgb(178, 30, 0)",
         padding: 10,
         borderRadius: 10,
         marginTop: "10%",

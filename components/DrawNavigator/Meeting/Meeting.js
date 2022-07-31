@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import  { io } from "socket.io-client";
 import { Camera } from 'expo-camera';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import LottieView from "lottie-react-native";
 
 let socket;
 const Meeting = () => {
@@ -44,7 +45,6 @@ const Meeting = () => {
     }
   return (
     <ScrollView style = {styles.main}>
-     
         {startCamera ? (
             <View style = {{ flex : 1 }}> 
                 <View style = {styles.camera}>
@@ -79,6 +79,14 @@ const Meeting = () => {
                  <View> 
                     <Text style = {styles.rubix}>Rubix Meetings</Text>
                 </View>
+                <View>
+                    <LottieView 
+                        style = {{ height: 200, alignSelf: "center"}}
+                        source = {require("../../../assets/json/meet.json")}
+                        autoPlay
+                        loop
+                    />
+                </View>
                     <View style = {styles.inputContainer}>
                         <TextInput 
                             placeholder = "Room Name" 
@@ -98,7 +106,7 @@ const Meeting = () => {
                     </View>
                     <View style = {styles.buttonContainer}>
                         <TouchableOpacity
-                            // onPress = {() => joinRoom()}
+                            onPress = {() => joinRoom()}
                             style = {styles.button}
                         >
                             <Text style = {styles.buttonText}>Start Meeting</Text>
@@ -119,7 +127,7 @@ export default Meeting
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "20%",
+        marginTop: "10%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',
@@ -130,7 +138,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '10%',
     },
     inputContainer: {
         width: '80%',

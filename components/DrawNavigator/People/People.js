@@ -2,6 +2,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
+import LottieView from "lottie-react-native";
+
 const People = ({route}) => {
     const { id, className, section, subjectName } = route.params;
     const navigation = useNavigation();
@@ -58,6 +60,14 @@ const People = ({route}) => {
             <MaterialIcons name = "settings" size = {30} color = "#0c002b" />
           </TouchableOpacity>
         </View>
+      </View>
+      <View>
+        <LottieView 
+          style = {{ height: 250, alignSelf: "center"}}
+          source = {require("../../../assets/json/participants.json")}
+          autoPlay
+          loop
+        />
       </View>
     </View>
   )

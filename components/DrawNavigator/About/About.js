@@ -96,7 +96,8 @@ const styles = StyleSheet.create({
     head: {
         color: "#fff",
         fontSize: 30,
-        fontWeight: "700"
+        fontWeight: "700",
+        marginTop: 10
     },
     team: {
         flexDirection: "column",
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
         width: "90%",
         margin: 10,
         borderRadius: 10,
-        backgroundColor: "rgb(0, 89, 178)"
+        backgroundColor: "rgb(0, 30, 90)"
     },
     items: {
         flexDirection: "row",
