@@ -4,13 +4,37 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import LottieView from "lottie-react-native";
+import { setDoc, doc } from 'firebase/firestore';
+import { authentication, db } from "../../../firebase/firebase-config";
+
 
 const Settings = ({route}) => {
     const navigation = useNavigation();
     const { id, className, section, subjectName } = route.params;
-    const [classname, setClassName] = useState(className);
-    const [sectionId, setSectionId] = useState(section);
-    const [subjectname, setSubjectName] = useState(subjectName);
+    const [classname, setClassName] = useState('');
+    const [sectionId, setSectionId] = useState('');
+    const [subjectname, setSubjectName] = useState('');
+    const handleSubmit = async (id) => {
+      const idRef = doc(db, `/users/${authentication.currentUser?.uid}/Rooms`, `${id}`);
+      const payload = (idRef, {
+        className: classname,
+        section: sectionId,
+        subjectName: subjectname
+      });
+      setDoc(idRef, payload)
+      .then(() => {
+          console.log("successfull");
+      })
+      .then(() => {
+          navigation.navigate("Rooms")
+      })
+      .then(() => {
+        setClassName('')
+        setSectionId('')
+        setSubjectName('')
+      })
+      .catch((error) => console.log(error));
+  }
   return (
     <ScrollView style = {styles.main}>
     <View>
@@ -99,7 +123,7 @@ const Settings = ({route}) => {
             <View style = {styles.buttonContainer}>
                 <TouchableOpacity
                     style = {styles.button}
-                    // onPress = {handleSubmit}
+                    onPress = {() => handleSubmit(id)}
                 >
                     <Text style = {styles.buttonText}>Update Room</Text>
                 </TouchableOpacity> 
@@ -120,7 +144,8 @@ export default Settings
 const styles = StyleSheet.create({
     main: {
         backgroundColor: "#0c002b",
-        height: "100%"
+        height: "100%",
+        overflowY: "hidden"
       },
       box: {
         backgroundColor: "rgb(0, 89, 178)",
