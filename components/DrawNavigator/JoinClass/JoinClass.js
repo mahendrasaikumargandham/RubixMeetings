@@ -3,15 +3,56 @@ import React, { useState } from 'react';
 import { ScrollView, KeyboardAvoidingView, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { addDoc, collection, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
+import { authentication, db } from "../../../firebase/firebase-config";
+import LottieView from "lottie-react-native";
 
 const JoinClass = () => {
     const [join, setJoin] = useState('');
+    const [email, setEmail] = useState('');
+    const [classExists, setClassExists] = useState(false);
+    const [info, setInfo] = useState('');
     const navigation = useNavigation();
+    const [className, setClassName] = useState('');
+    const [section, setSection] = useState('');
+    const [subjectName, setSubjectName] = useState('');
 
     const handleReturn = () => {
         navigation.navigate("Rooms");
     }
 
+    const handleSubmit = async () => {
+        const docRef = doc(db, `/users/${email}/Rooms`, `${join}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists() && docSnap.owner !== authentication.currentUser?.email) {
+            const info = [];
+            console.log("Document data:", docSnap.data());
+            const {className, section, subjectName} = docSnap.data();
+            info.push({ id: docSnap.id, className, section, subjectName});
+            setClassName(className);
+            setSection(section);
+            setSubjectName(subjectName);
+            setInfo(info);
+            const classesRef = collection(db, 'users');
+            await addDoc(collection(classesRef, authentication.currentUser?.email, "Rooms"), {
+                className, section, subjectName
+            })
+            .then(() => {
+                setJoin('');
+                setEmail('');
+            })
+            .then(() => {
+                navigation.navigate("Rooms");
+            })
+            .catch((error) => {
+                console.log(error.message)
+            })
+        } else {
+            console.log("No such document!");
+            setClassExists(false);
+            return;
+        }
+    }
   return (
     <ScrollView style = {styles.main}>
         <View> 
@@ -21,6 +62,14 @@ const JoinClass = () => {
             style = {styles.container}
             behavior = "padding"
         >
+            <View>
+                <LottieView 
+                    style = {{ height: 180, alignSelf: "center" }}
+                    source = {require("../../../assets/json/join.json")}
+                    autoPlay
+                    loop
+                />
+            </View>
             <View style = {styles.inputContainer}>
                 <TextInput 
                     placeholder = "Room Code" 
@@ -29,10 +78,18 @@ const JoinClass = () => {
                     onChangeText = {text => setJoin(text)} 
                     style = {styles.input}
                 />
+                <TextInput 
+                    placeholder = "Creater Email ID" 
+                    value = {email} 
+                    autoComplete= 'off'
+                    onChangeText = {text => setEmail(text)} 
+                    style = {styles.input}
+                />
             </View>
             <View style = {styles.buttonContainer}>
                 <TouchableOpacity
                     style = {styles.button}
+                    onPress = {() => handleSubmit()}
                 >
                     <Text style = {styles.buttonText}>Join Room</Text>
                 </TouchableOpacity> 
@@ -49,7 +106,7 @@ export default JoinClass
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "20%",
+        marginTop: "10%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',

@@ -4,10 +4,11 @@ import { TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { collection, addDoc } from "firebase/firestore"; 
 import { authentication, db } from '../../../firebase/firebase-config';
+import LottieView from "lottie-react-native";
 
 const CreateClass = () => {
-    const navigation = useNavigation();
 
+    const navigation = useNavigation();
     const handleReturn = () => {
         navigation.navigate("Rooms");
     }
@@ -17,13 +18,16 @@ const CreateClass = () => {
     const [subjectName, setSubjectName] = useState('');
 
     const handleSubmit = async () => {
-        const citiesRef = collection(db, 'users');
-        await addDoc(collection(citiesRef, authentication.currentUser?.uid, "Rooms"), {
+        const classesRef = collection(db, 'users');
+        await addDoc(collection(classesRef, authentication.currentUser?.email, "Rooms"), {
             className: className,
             section: sectionId,
             subjectName: subjectName
         })
         .then(() => {
+            setClassName('');
+            setSectionId('');
+            setSubjectName('');
             console.log("successfull");
         })
         .then(() => {
@@ -41,6 +45,14 @@ const CreateClass = () => {
             style = {styles.container}
             behavior = "padding"
         >
+            <View>
+                <LottieView 
+                    style = {{ height: 170, alignSelf: "center" }}
+                    source = {require("../../../assets/json/create.json")}
+                    autoPlay
+                    loop
+                />
+            </View>
             <View style = {styles.inputContainer}>
                 <TextInput 
                     placeholder = "Room Name" 
@@ -84,7 +96,7 @@ export default CreateClass
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "20%",
+        marginTop: "10%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',

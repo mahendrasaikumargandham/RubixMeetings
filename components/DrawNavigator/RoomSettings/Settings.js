@@ -16,7 +16,7 @@ const Settings = ({route}) => {
     const [subjectname, setSubjectName] = useState('');
 
     const handleSubmit = async (id) => {
-      const idRef = doc(db, `/users/${authentication.currentUser?.uid}/Rooms`, `${id}`);
+      const idRef = doc(db, `/users/${authentication.currentUser?.email}/Rooms`, `${id}`);
       const payload = (idRef, {
         className: classname,
         section: sectionId,
@@ -38,7 +38,7 @@ const Settings = ({route}) => {
     }
 
     const handleDelete = async (id) => {
-      await deleteDoc(doc(db, `/users/${authentication.currentUser?.uid}/Rooms`, `${id}`))
+      await deleteDoc(doc(db, `/users/${authentication.currentUser?.email}/Rooms`, `${id}`))
       .then(() => {
         console.log("delete successfully")
       })

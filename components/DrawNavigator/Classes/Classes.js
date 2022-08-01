@@ -22,8 +22,8 @@ const Classes = () => {
   }
 
   const [info, setInfo] = useState([]);
-  const fileRef = collection(db, `/users/${authentication.currentUser?.uid}/Rooms`);
 
+  const fileRef = collection(db, `/users/${authentication.currentUser?.email}/Rooms`);
   useEffect(() => {
     onSnapshot(
       fileRef,
@@ -46,11 +46,6 @@ const Classes = () => {
   
   const handleJoin = () => {
     navigation.navigate("Join a Room");
-  }
-
-  const handleRedirect = (item) => {
-    console.log(item);
-    navigation.navigate("Server", { item });
   }
 
   return (
