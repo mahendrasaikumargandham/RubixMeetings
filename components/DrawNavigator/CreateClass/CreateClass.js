@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         textAlign: 'center',
         color: "#fff",
-        fontFamily: 'UbuntuMono-R'
     },
     container: {
         flex: 1,
