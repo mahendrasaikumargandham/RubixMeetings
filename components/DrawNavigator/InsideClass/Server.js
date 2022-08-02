@@ -91,7 +91,16 @@ const Server = ({route}) => {
         />
       </View>
       <View style = {styles.view}>
-        <TouchableOpacity style = {styles.start}>
+        <TouchableOpacity 
+          style = {styles.start}
+          onPress = {() => 
+            navigation.navigate("Verifier", { 
+                id: id,
+                className: className, 
+                section: section, 
+                subjectName: subjectName 
+            })}
+        >
           <MaterialIcons name = "meeting-room" size = {30} color = "#fff" />
           <Text style = {styles.meetingText}>Start Meeting</Text>
         </TouchableOpacity>

@@ -2,43 +2,38 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useState, useRef } from 'react'
 import { ScrollView, KeyboardAvoidingView, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native';
-import { authentication } from '../../firebase/firebase-config';
+import { authentication } from '../../../firebase/firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
 
-const LoginScreen = () => {
+const Verifier = ({ route }) => {
 
     const [email, setEmail] = useState('');         
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
     const emailRef = useRef();
-
-    useEffect(() => {
-        const unsubscribe = authentication.onAuthStateChanged(user => {
-            if(user) {
-                navigation.replace("Home")
-            }
-        })
-        return unsubscribe;
-    }, []);
-
+    const { id, className, section, subjectName } = route.params;
     const handleLogin = () => {
         signInWithEmailAndPassword(authentication, email, password)
         .then(userCredentials => {
             const user = userCredentials.user;
-            console.log('Logged in with ',user.email);
+            console.log('Verified as ',user.email);
+        })
+        .then(() => {
+            setEmail("")
+            setPassword("")
+        })
+        .then(() => {
+            navigation.navigate("Start Meeting", { 
+                id: id,
+                className: className, 
+                section: section,
+                subjectName: subjectName 
+            })
         })
         .catch(error => alert(error));
-    }
-
-    const handleForgot = () => {
-        navigation.replace("ForgotPassword");
-    }
-
-    const redirect = () => {
-        navigation.replace("Register");
     }
   return (
     <ScrollView style = {styles.main}>
@@ -48,7 +43,7 @@ const LoginScreen = () => {
         <View>
             <LottieView 
                 style = {styles.lottie}
-                source = {require('../../assets/json/login.json')}
+                source = {require('../../../assets/json/login.json')}
                 autoPlay
                 loop
             />
@@ -77,22 +72,21 @@ const LoginScreen = () => {
             </View>
             <View style = {styles.buttonContainer}>
                 <TouchableOpacity
-                        onPress={handleForgot}
-                >
-                    <Text style = {styles.forgot}>forgot password?</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
                     onPress = {handleLogin}
                     style = {styles.button}
                 >
-                    <Text style = {styles.buttonText}>Login</Text>
+                    <Text style = {styles.buttonText}>Verify</Text>
                 </TouchableOpacity> 
-                <View><Text style = {styles.new}>New to Rubix Meetings?</Text></View>
                 <TouchableOpacity
-                    onPress = {redirect}
-                    style = {[styles.button, styles.buttonOutline]}
+                    onPress = {() => 
+                        navigation.navigate("Server", { 
+                            id: id,
+                            className: className, 
+                            section: section, 
+                            subjectName: subjectName 
+                    })}
                 >
-                    <Text style = {styles.buttonOutlineText}>Register</Text>
+                    <Text style = {styles.cancel}>Cancel</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
@@ -100,11 +94,11 @@ const LoginScreen = () => {
   )
 }
 
-export default LoginScreen
+export default Verifier
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "20%",
+        marginTop: "10%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',
@@ -171,5 +165,10 @@ const styles = StyleSheet.create({
     lottie: {
         alignSelf: "center",
         height: 200
-    }
+    },
+    cancel: {
+        textDecorationLine: "underline",
+        marginTop: 10,
+        color: "#fff"
+    },
 })

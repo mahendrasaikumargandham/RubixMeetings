@@ -16,7 +16,6 @@ const JoinClass = () => {
     const [className, setClassName] = useState('');
     const [section, setSection] = useState('');
     const [subjectName, setSubjectName] = useState('');
-
     const handleReturn = () => {
         navigation.navigate("Rooms");
     }
@@ -24,7 +23,7 @@ const JoinClass = () => {
     const handleSubmit = async () => {
         const docRef = doc(db, `/users/${email}/Rooms`, `${join}`);
         const docSnap = await getDoc(docRef);
-        if (docSnap.exists() && docSnap.owner !== authentication.currentUser?.email) {
+        if (docSnap.exists() && `${email}` !== authentication.currentUser?.email) {
             const info = [];
             console.log("Document data:", docSnap.data());
             const {className, section, subjectName} = docSnap.data();
@@ -34,7 +33,7 @@ const JoinClass = () => {
             setSubjectName(subjectName);
             setInfo(info);
             const classesRef = collection(db, 'users');
-            await addDoc(collection(classesRef, authentication.currentUser?.email, "Rooms"), {
+            await setDoc(doc(classesRef, authentication.currentUser?.email, `/Rooms/${join}`), {
                 className, section, subjectName
             })
             .then(() => {
@@ -44,12 +43,20 @@ const JoinClass = () => {
             .then(() => {
                 navigation.navigate("Rooms");
             })
+            .then(() => {
+                const currentMail = `${authentication.currentUser.email}`
+                const classesRef = collection(db, `/users/${email}/Rooms`);
+                setDoc(doc(classesRef, `${join}/Participants`, authentication.currentUser?.email), {
+                    currentMail
+            })
+            })
             .catch((error) => {
                 console.log(error.message)
             })
         } else {
             console.log("No such document!");
             setClassExists(false);
+            navigation.navigate("Rooms");
             return;
         }
     }

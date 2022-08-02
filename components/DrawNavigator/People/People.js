@@ -1,12 +1,33 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
+import { db, authentication } from '../../../firebase/firebase-config';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 const People = ({route}) => {
     const { id, className, section, subjectName } = route.params;
     const navigation = useNavigation();
+    const [info, setInfo] = useState([]);
+  const fileRef = collection(db, `/users/${authentication.currentUser?.email}/Rooms/${id}/Participants`);
+  console.log(id)
+  useEffect(() => {
+    onSnapshot(
+      fileRef,
+      querySnapshot => {
+        const info = []
+        querySnapshot.forEach((doc) => {
+          const { currentMail } = doc.data()
+          info.push({ id: doc.id, currentMail
+          })
+        })
+        setInfo(info);
+      }
+    )
+  },[]);
+  console.log(info);
+  console.log(id);
   return (
     <View style = {styles.main}>
       <View>
@@ -61,6 +82,7 @@ const People = ({route}) => {
           </TouchableOpacity>
         </View>
       </View>
+      {/* <Text style = {styles.note}>Only creator of the Room can access the participants list</Text> */}
       <View>
         <LottieView 
           style = {{ height: 250, alignSelf: "center"}}
@@ -69,7 +91,8 @@ const People = ({route}) => {
           loop
         />
       </View>
-    </View>
+        
+      </View>
   )
 }
 
@@ -124,5 +147,29 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         padding: 5,
         borderRadius: 10
+      },
+      participant: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: "700"
+      },
+      participants: {
+        borderTopColor: "#fff",
+        borderTopWidth: 1,
+        width: "90%",
+        alignSelf: "center",
+        padding: 10, 
+      },
+      heading: {
+        fontSize: 15,
+        fontWeight: "700",
+        color: "white",
+        alignSelf: "center"
+      },
+      note: {
+        color: "#fff",
+        textAlign: "center",
+        fontSize: 18,
+        fontWeight: "700"
       }
 })
