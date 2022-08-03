@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
 
 const RubixMeeting = ({ route }) => {
-    const [name, setName] = useState();
     const [roomId, setRoomId] = useState();
     const { id, className, section, subjectName } = route.params;
     const navigation = useNavigation();
@@ -21,27 +20,17 @@ const RubixMeeting = ({ route }) => {
             style = {styles.container}
             behavior = "padding"
         >   
-            <View> 
-                <Text style = {styles.rubix}>Rubix Meeting</Text>
-            </View>
             <View>
                 <LottieView 
                     style = {{ height: 200, alignSelf: "center"}}
-                    source = {require("../../../assets/json/meet.json")}
+                    source = {require("../../../assets/json/startmeeting.json")}
                     autoPlay
                     loop
                 />
             </View>
                 <View style = {styles.inputContainer}>
                     <TextInput 
-                        placeholder = "Room Name" 
-                        value = {name} 
-                        autoComplete= 'off'
-                        onChangeText = {text => setName(text)} 
-                        style = {styles.input}
-                    />
-                    <TextInput 
-                        placeholder = "Room ID" 
+                        placeholder = "Meeting ID" 
                         value = {roomId} 
                         autoComplete= 'off'
                         onChangeText = {text => setRoomId(text)} 
@@ -69,18 +58,11 @@ const RubixMeeting = ({ route }) => {
 export default RubixMeeting
 
 const styles = StyleSheet.create({
-    rubix: {
-        marginTop: "10%",
-        fontSize: 30,
-        fontWeight: "700",
-        textAlign: 'center',
-        color: "#fff",
-        marginBottom: 20
-    },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: "15%"
     },
     inputContainer: {
         width: '80%',

@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useState, useRef } from 'react'
-import { ScrollView, KeyboardAvoidingView, TextInput } from 'react-native';
-import { TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native'
+import React, { useState, useRef, useEffect } from 'react'
+import { ScrollView, KeyboardAvoidingView, TextInput,TouchableOpacity } from 'react-native';
 import { authentication } from '../../../firebase/firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useEffect } from 'react';
+import * as LocalAuthentication from 'expo-local-authentication';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
 
@@ -14,7 +13,63 @@ const Verifier = ({ route }) => {
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
     const emailRef = useRef();
+    const [isFingerPrintSupported, setIsFingerPrintSupported] = useState(false);
     const { id, className, section, subjectName } = route.params;
+
+    useEffect(() => {
+        (async() => {
+          const compatible = await LocalAuthentication.hasHardwareAsync();
+          setIsFingerPrintSupported(compatible);
+        })();
+    }, []);
+
+    const alertComponent = (title, mess, btnTxt, btnFunc) => {
+        return Alert.alert(title, mess, [
+          {
+            text: btnTxt,
+            onPress: btnFunc
+          }
+        ]);
+    }
+
+    const twoButtonAlert = () => {
+        navigation.navigate("Start Meeting", { 
+            id: id,
+            className: className, 
+            section: section,
+            subjectName: subjectName 
+        })
+    }
+
+    const handleFingerPrintAuth = async () => {
+        const isFingerPrintAvailable = await LocalAuthentication.hasHardwareAsync();
+        if(!isFingerPrintAvailable) {
+          return alertComponent(
+            () => fallBackToDefaultAuth()
+          )
+        }
+    
+        let supportedFingerPrint;
+        if(isFingerPrintAvailable) {
+          supportedFingerPrint = await LocalAuthentication.supportedAuthenticationTypesAsync()
+        }
+        const savedFingerPrint = await LocalAuthentication.isEnrolledAsync();
+        if(!savedFingerPrint) {
+          alertComponent(
+            () => fallBackToDefaultAuth()
+          )
+        }
+    
+        const FingerPrintAuth = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Please Verify your Finger Print ID",
+          disableDeviceFallback: false
+        });
+    
+        if(FingerPrintAuth) {
+          twoButtonAlert();
+        }
+    }
+
     const handleLogin = () => {
         signInWithEmailAndPassword(authentication, email, password)
         .then(userCredentials => {
@@ -26,12 +81,7 @@ const Verifier = ({ route }) => {
             setPassword("")
         })
         .then(() => {
-            navigation.navigate("Start Meeting", { 
-                id: id,
-                className: className, 
-                section: section,
-                subjectName: subjectName 
-            })
+            handleFingerPrintAuth();
         })
         .catch(error => alert(error));
     }
@@ -54,7 +104,7 @@ const Verifier = ({ route }) => {
         >
             <View style = {styles.inputContainer}>
                 <TextInput 
-                    placeholder = "Username or Email" 
+                    placeholder = "Email ID" 
                     value = {email} 
                     ref={emailRef}
                     autoComplete= 'off'
@@ -72,7 +122,7 @@ const Verifier = ({ route }) => {
             </View>
             <View style = {styles.buttonContainer}>
                 <TouchableOpacity
-                    onPress = {handleLogin}
+                    onPress={() => handleLogin()}
                     style = {styles.button}
                 >
                     <Text style = {styles.buttonText}>Verify</Text>

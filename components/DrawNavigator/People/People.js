@@ -3,31 +3,11 @@ import React, { useEffect, useState } from 'react'
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
-import { db, authentication } from '../../../firebase/firebase-config';
-import { collection, onSnapshot } from 'firebase/firestore';
 
 const People = ({route}) => {
     const { id, className, section, subjectName } = route.params;
     const navigation = useNavigation();
-    const [info, setInfo] = useState([]);
-  const fileRef = collection(db, `/users/${authentication.currentUser?.email}/Rooms/${id}/Participants`);
-  console.log(id)
-  useEffect(() => {
-    onSnapshot(
-      fileRef,
-      querySnapshot => {
-        const info = []
-        querySnapshot.forEach((doc) => {
-          const { currentMail } = doc.data()
-          info.push({ id: doc.id, currentMail
-          })
-        })
-        setInfo(info);
-      }
-    )
-  },[]);
-  console.log(info);
-  console.log(id);
+
   return (
     <View style = {styles.main}>
       <View>
@@ -91,7 +71,6 @@ const People = ({route}) => {
           loop
         />
       </View>
-        
       </View>
   )
 }
