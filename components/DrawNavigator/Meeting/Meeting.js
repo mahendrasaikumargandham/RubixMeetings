@@ -127,7 +127,7 @@ export default Meeting
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "10%",
+        marginTop: "30%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',

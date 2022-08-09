@@ -1,10 +1,8 @@
 import { ScrollView, KeyboardAvoidingView, TextInput, StyleSheet, Text, View } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native';
 
 const Contact = () => {
-    const navigation = useNavigation();
     
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -53,7 +51,6 @@ const Contact = () => {
         </View>
         <View style = {styles.buttonContainer}>
             <TouchableOpacity
-                // onPress = {handleSignUp}
                 style = {styles.button}
             >
                 <Text style = {styles.buttonText}>Contact</Text>
@@ -89,7 +86,7 @@ const styles = StyleSheet.create({
         
     },
     inputContainer: {
-        width: '80%',
+        width: '90%',
     },
     input: {
         backgroundColor: '#fff',

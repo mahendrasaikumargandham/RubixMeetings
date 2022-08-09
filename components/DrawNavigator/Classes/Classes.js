@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +7,6 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
-import { Provider } from 'react-native-paper';
 import LottieView from "lottie-react-native";
 
 
@@ -49,59 +48,54 @@ const Classes = () => {
   }
 
   return (
-    <Provider>
-      <ScrollView style = {styles.main}>
-        <View>
-          <View style = {styles.container}>
-            <View style = {styles.direction}>
-              <TouchableOpacity onPress = {handleCreate}>
-                <Text style = {styles.buttons}>Create Room</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress = {handleJoin}>
-                <Text style = {styles.buttons}>Join Room</Text>
-              </TouchableOpacity> 
-            </View>
-            <View>
-              <LottieView 
-                style = {{ alignSelf: "center", height: 200 }}
-                source = {require("../../../assets/json/classes.json")}
-                autoPlay
-                loop
-              />
-            </View>
-            <View style = {{ alignItems: "center", marginTop: 10 }}></View>
-            <FlatList
-              data = {info}
-              numColumns = {1}
-              renderItem = {({item}) => (
-                <TouchableOpacity
-                  style = {styles.box}
-                  onPress = {() => 
-                    navigation.navigate("Server", { 
-                      id: item.id,
-                      className: item.className, 
-                      section: item.section, 
-                      subjectName: item.subjectName 
-                    })}
-                >
-                  <View style = {styles.view}>
-                    <Text style = {styles.heading}>{item.className} {item.section}</Text>
-                    <Text>
-                      <TouchableOpacity 
-                        onPress = {() => selectedClass(item)}
-                      >
-                        <MaterialIcons name = "archive" size = {25} color = "white" /> 
-                      </TouchableOpacity>
-                    </Text>
-                  </View>
-                    <Text style = {styles.subject}>{item.subjectName}</Text>
-                </TouchableOpacity>
-              )}
+    <ScrollView style = {styles.main}>
+      <View>
+        <View style = {styles.container}>
+          <View style = {styles.direction}>
+            <TouchableOpacity onPress = {handleCreate}>
+              <Text style = {styles.buttons}>Create Room</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress = {handleJoin}>
+              <Text style = {styles.buttons}>Join Room</Text>
+            </TouchableOpacity> 
+          </View>
+          <View>
+            <LottieView 
+              style = {{ alignSelf: "center", height: 200 }}
+              source = {require("../../../assets/json/classes.json")}
+              autoPlay
+              loop
             />
           </View>
+          <View style = {{ alignItems: "center", marginTop: 10 }}></View>
+            {info.map((item, index) => (
+              <TouchableOpacity
+                key = {index}
+                style = {styles.box}
+                onPress = {() => 
+                  navigation.navigate("Server", { 
+                    id: item.id,
+                    className: item.className, 
+                    section: item.section, 
+                    subjectName: item.subjectName 
+                  })}
+              >
+                <View style = {styles.view}>
+                  <Text style = {styles.heading}>{item.className} {item.section}</Text>
+                  <Text>
+                    <TouchableOpacity 
+                      onPress = {() => selectedClass(item)}
+                    >
+                      <MaterialIcons name = "archive" size = {25} color = "white" /> 
+                    </TouchableOpacity>
+                  </Text>
+                </View>
+                  <Text style = {styles.subject}>{item.subjectName}</Text>
+              </TouchableOpacity>
+            ))}
         </View>
-      </ScrollView>
-    </Provider> 
+      </View>
+    </ScrollView>
   )
 }
 
@@ -140,7 +134,6 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     fontSize: 17,
-    // borderColor: "#fff",
     borderWidth: 3,
     borderRadius: 10,
   },

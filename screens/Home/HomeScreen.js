@@ -22,6 +22,7 @@ import Settings from '../../components/DrawNavigator/RoomSettings/Settings';
 import Phone from '../../components/DrawNavigator/PhoneVerifier/Phone';
 import Verifier from '../../components/DrawNavigator/Verifier/Verifier';
 import RubixMeeting from '../../components/DrawNavigator/RubixMeeting/RubixMeeting';
+import Lobby from '../../components/DrawNavigator/Lobby/Lobby';
 
 const Drawer = createDrawerNavigator();
 
@@ -118,15 +119,16 @@ const HomeScreen = () => {
         }}
       />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Profile" component = {Profile} />
-      <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Create a Room" component = {CreateClass} />
-      <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Join a Room" component = {JoinClass} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Create a Room" component = {CreateClass} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Join a Room" component = {JoinClass} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Server" component = {Server} />
-      <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Emergency Meeting" component = {Meeting} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Emergency Meeting" component = {Meeting} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Participants" component = {People} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Room Settings" component = {Settings} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Phone Verification" component = {Phone} />
-      <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Verifier" component = {Verifier} />
-      <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Start Meeting" component = {RubixMeeting} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Verifier" component = {Verifier} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Start Meeting" component = {RubixMeeting} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Lobby" component = {Lobby} />
     </Drawer.Navigator>
   )
 }

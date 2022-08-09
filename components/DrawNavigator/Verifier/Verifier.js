@@ -5,7 +5,6 @@ import { authentication } from '../../../firebase/firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useNavigation } from '@react-navigation/native';
-import LottieView from "lottie-react-native";
 
 const Verifier = ({ route }) => {
 
@@ -88,15 +87,10 @@ const Verifier = ({ route }) => {
   return (
     <ScrollView style = {styles.main}>
         <View> 
-            <Text style = {styles.rubix}>Rubix Meetings</Text>
+            <Text style = {styles.rubix}>Rubix Verifier</Text>
         </View>
         <View>
-            <LottieView 
-                style = {styles.lottie}
-                source = {require('../../../assets/json/login.json')}
-                autoPlay
-                loop
-            />
+            <Text style = {styles.caption}>Please verify your login credentials to enter the meeting</Text>
         </View>
         <KeyboardAvoidingView
             style = {styles.container}
@@ -148,7 +142,7 @@ export default Verifier
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "10%",
+        marginTop: "40%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',
@@ -221,4 +215,12 @@ const styles = StyleSheet.create({
         marginTop: 10,
         color: "#fff"
     },
+    caption: {
+        color: "#fff",
+        textAlign: "center",
+        marginTop: "10%",
+        fontSize: 17,
+        margin: 10,
+        fontWeight: "600"
+    }
 })

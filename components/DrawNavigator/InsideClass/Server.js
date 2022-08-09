@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(0, 89, 178)",
     padding: 10,
     borderRadius: 10,
+    marginTop: 10
   },
   view: {
     alignItems: "center",

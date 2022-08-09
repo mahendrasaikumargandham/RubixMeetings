@@ -96,7 +96,7 @@ export default CreateClass
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "10%",
+        marginTop: "25%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',
