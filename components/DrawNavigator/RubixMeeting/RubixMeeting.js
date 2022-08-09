@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, BackHandler, StyleSheet, Text, View } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Modal, ScrollView, TextInput } from 'react-native';
 import StartMeeting from '../StartMeeting/StartMeeting';
@@ -26,6 +26,7 @@ const RubixMeeting = () => {
     const [participants, setParticipants] = useState(false);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [isDisabled, setIsDisabled] = useState(false);
     const name = `${authentication.currentUser?.displayName}`;
     const navigation = useNavigation();
 
@@ -38,7 +39,36 @@ const RubixMeeting = () => {
         }
     }
 
+    const handleBackPress = () => {
+        Alert.alert(
+            "Rubix Meetings",
+            "Do you want to exit from Meeting?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => {
+                        console.log("cancel Pressed")
+                    },
+                    style: "cancel"
+                },
+                {
+                    text: "OK",
+                    onPress: () => {
+                        socket.disconnect();
+                        setStartCamera(false); 
+                        navigation.navigate("Lobby");
+                        console.log("OK pressed")
+                    },
+                },
+            ],
+            {
+                cancelable: false,
+            }
+        );
+        return true;
+    }
     useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", handleBackPress);
         socket = io("https://8b32-2409-4070-4808-a36b-f0e9-1629-9aec-a1f6.in.ngrok.io");
         socket.on("connection", () => console.log("Connected"));
         socket.on("all-users", users => {
@@ -59,6 +89,10 @@ const RubixMeeting = () => {
     }
 
     const sendMessage = () => {
+        if (message == "" || message == null) {
+            setIsDisabled(true);
+        }
+        console.log(message)
         socket.emit("messages", ({ userName: name, message: message}));
         setMessage('');
     }
@@ -108,6 +142,8 @@ const RubixMeeting = () => {
                         name = {name}
                         messages = {messages}
                         setMessages = {setMessages}
+                        isDisabled = {isDisabled}
+                        setIsDisabled = {setIsDisabled}
                     />
                 </Modal>
                 <View style = {styles.menu}>

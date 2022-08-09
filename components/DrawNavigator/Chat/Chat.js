@@ -9,9 +9,10 @@ const Chat = ({
     message, 
     setMessage,
     sendMessage,
-    name,
     messages,
-    setMessages
+    setMessages,
+    isDisabled,
+    setIsDisabled
 }) => {
   return (
     <View style = {styles.container}>
@@ -32,7 +33,7 @@ const Chat = ({
                 </View>
             ))}
         </ScrollView>
-        <View style = {{ flexDirection: "row", alignItems: "center" }}>
+        <View style = {[{ flexDirection: "row", alignItems: "center" }]}>
             <TextInput
                 value = {message}
                 onChangeText = {text => setMessage(text)}
@@ -40,11 +41,12 @@ const Chat = ({
                 placeholder = "Enter message"
                 placeholderTextColor = "gray"
                 onSubmitEditing={() => sendMessage()}
-                style = {styles.textInput}
+                style = {[styles.textInput, { borderColor: message ? "rgb(0, 89, 178)": "#fff"}]}
             />
             <TouchableOpacity
                 style = {[{ backgroundColor: message ? "rgb(0,89,178)" : "#fff" }, styles.button]}
                 onPress = {() => sendMessage()}
+                disabled = {isDisabled}
             >
                 <MaterialIcons name = "send" size = {26} color = {message ? "#fff" : "#0c002b"} />
             </TouchableOpacity>
@@ -74,7 +76,6 @@ const styles = StyleSheet.create({
         color: "#fff",
         margin: 5,
         padding: 10,
-        borderColor: "rgb(0, 89, 178)",
         borderWidth: 2,
         flex: 1,
         borderRadius: 10,

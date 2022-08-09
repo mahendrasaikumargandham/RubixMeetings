@@ -1,4 +1,4 @@
-import { ScrollView, KeyboardAvoidingView, TextInput, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, TextInput, StyleSheet, Text, View, Button } from 'react-native';
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
@@ -16,24 +16,30 @@ const CreateClass = () => {
     const [className, setClassName] = useState('');
     const [sectionId, setSectionId] = useState('');
     const [subjectName, setSubjectName] = useState('');
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const handleSubmit = async () => {
-        const classesRef = collection(db, 'users');
-        await addDoc(collection(classesRef, authentication.currentUser?.email, "Rooms"), {
-            className: className,
-            section: sectionId,
-            subjectName: subjectName
-        })
-        .then(() => {
-            setClassName('');
-            setSectionId('');
-            setSubjectName('');
-            console.log("successfull");
-        })
-        .then(() => {
-            navigation.navigate("Rooms");
-        })
-        .catch((error) => console.log(error));
+        if (className == "" || className == null || sectionId == "" || sectionId == null || subjectName == "" || subjectName == null) {
+            setIsDisabled(true);
+        }
+        {
+            const classesRef = collection(db, 'users');
+            await addDoc(collection(classesRef, authentication.currentUser?.email, "Rooms"), {
+                className: className,
+                section: sectionId,
+                subjectName: subjectName
+            })
+            .then(() => {
+                setClassName('');
+                setSectionId('');
+                setSubjectName('');
+                console.log("successfull");
+            })
+            .then(() => {
+                navigation.navigate("Rooms");
+            })
+            .catch((error) => console.log(error));
+        }
     }
 
   return (
@@ -78,12 +84,15 @@ const CreateClass = () => {
             </View>
             <View style = {styles.buttonContainer}>
                 <TouchableOpacity
-                    style = {styles.button}
+                    style = {[styles.button, {backgroundColor: className ? "rgb(0, 89, 178)" : "#fff"} ]}
                     onPress = {handleSubmit}
+                    disabled = {isDisabled}
                 >
-                    <Text style = {styles.buttonText}>Create Room</Text>
+                    <Text style = {[styles.buttonText, { color: className ? "#fff" : "#0c002b"}]}>Create Room</Text>
                 </TouchableOpacity> 
-                <TouchableOpacity onPress = {handleReturn}>
+                <TouchableOpacity 
+                    onPress = {handleReturn}
+                >
                 <Text style = {styles.cancel}>Cancel</Text>
                 </TouchableOpacity>
             </View>
@@ -125,7 +134,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     button: {
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
         width: '100%',
         paddingHorizontal: 10,
         paddingVertical: 10,

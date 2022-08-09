@@ -3,11 +3,28 @@ import React, { useEffect, useState } from 'react'
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
+import { collection, onSnapshot } from "firebase/firestore";
+import { authentication, db } from '../../../firebase/firebase-config';
 
 const People = ({route}) => {
     const { id, className, section, subjectName } = route.params;
     const navigation = useNavigation();
-
+    const [info, setInfo] = useState([]);
+    const fileRef = collection(db, `/users/${authentication.currentUser?.email}/Rooms/${id}/Participants/`);
+    useEffect(() => {
+      onSnapshot(
+        fileRef,
+        querySnapshot => {
+          const info = []
+          querySnapshot.forEach((doc) => {
+            const {currentMail} = doc.data()
+            info.push({ id: doc.id, currentMail
+            })
+          })
+          setInfo(info);
+        }
+      )
+    },[]);
   return (
     <View style = {styles.main}>
       <View>
@@ -62,7 +79,7 @@ const People = ({route}) => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* <Text style = {styles.note}>Only creator of the Room can access the participants list</Text> */}
+      <Text style = {styles.note}>Only creator of the Room can access the participants list</Text>
       <View>
         <LottieView 
           style = {{ height: 250, alignSelf: "center"}}
@@ -70,6 +87,22 @@ const People = ({route}) => {
           autoPlay
           loop
         />
+      </View>
+      <View>
+            
+          <Text style = {styles.list}>Participants</Text>
+          <View style = {{ flexDirection: "row", alignItems: "center", marginTop: 20}}>
+            <MaterialIcons name = "account-circle" color = "#fff" size = {40} />
+            <Text style = {styles.usersText}>{authentication.currentUser?.email}</Text>
+          </View>
+          <View>
+            {info.map((item, index) =>
+              <View key = {index} style = {{ flexDirection: "row", alignItems: "center", marginTop: 10}}>
+                <MaterialIcons name = "account-circle" color = "#fff" size = {40} />
+                <Text style = {styles.usersText}>{item.currentMail}</Text>
+              </View>
+            )}
+          </View>
       </View>
       </View>
   )
@@ -150,5 +183,19 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 18,
         fontWeight: "700"
+      },
+      usersText: {
+        color: "#fff",
+        marginLeft: 10,
+        fontSize: 18,
+        fontWeight: "700",
+      },
+      list: {
+        color: "#0c002b",
+        fontSize: 20,
+        fontWeight: "800",
+        textAlign: "center",
+        backgroundColor: "#fff",
+        padding: 10
       }
 })

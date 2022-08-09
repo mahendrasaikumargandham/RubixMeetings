@@ -14,27 +14,33 @@ const Settings = ({route}) => {
     const [classname, setClassName] = useState('');
     const [sectionId, setSectionId] = useState('');
     const [subjectname, setSubjectName] = useState('');
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const handleSubmit = async (id) => {
-      const idRef = doc(db, `/users/${authentication.currentUser?.email}/Rooms`, `${id}`);
-      const payload = (idRef, {
-        className: classname,
-        section: sectionId,
-        subjectName: subjectname
-      });
-      setDoc(idRef, payload)
-      .then(() => {
-          console.log("successfull");
-      })
-      .then(() => {
-          navigation.navigate("Rooms")
-      })
-      .then(() => {
-        setClassName('')
-        setSectionId('')
-        setSubjectName('')
-      })
-      .catch((error) => console.log(error));
+      if (classname == "" || classname == null || sectionId == "" || sectionId == null || subjectname == "" || subjectname == null) {
+        setIsDisabled(true);
+      }
+      else {
+        const idRef = doc(db, `/users/${authentication.currentUser?.email}/Rooms`, `${id}`);
+        const payload = (idRef, {
+          className: classname,
+          section: sectionId,
+          subjectName: subjectname
+        });
+        setDoc(idRef, payload)
+        .then(() => {
+            console.log("successfull");
+        })
+        .then(() => {
+            navigation.navigate("Rooms")
+        })
+        .then(() => {
+          setClassName('')
+          setSectionId('')
+          setSubjectName('')
+        })
+        .catch((error) => console.log(error));
+      }
     }
 
     const handleDelete = async (id) => {
@@ -144,6 +150,7 @@ const Settings = ({route}) => {
                 <TouchableOpacity
                     style = {styles.button}
                     onPress = {() => handleSubmit(id)}
+                    disabled = {isDisabled}
                 >
                     <Text style = {styles.buttonText}>Update Room</Text>
                 </TouchableOpacity> 
