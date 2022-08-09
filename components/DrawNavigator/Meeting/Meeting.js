@@ -106,7 +106,7 @@ const Meeting = () => {
                     </View>
                     <View style = {styles.buttonContainer}>
                         <TouchableOpacity
-                            onPress = {() => joinRoom()}
+                            // onPress = {() => joinRoom()}
                             style = {styles.button}
                         >
                             <Text style = {styles.buttonText}>Start Meeting</Text>
