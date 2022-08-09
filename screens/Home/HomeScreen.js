@@ -19,7 +19,6 @@ import About from '../../components/DrawNavigator/About/About';
 import Contact from '../../components/DrawNavigator/Contact/Contact';
 import People from '../../components/DrawNavigator/People/People';
 import Settings from '../../components/DrawNavigator/RoomSettings/Settings';
-import Phone from '../../components/DrawNavigator/PhoneVerifier/Phone';
 import Verifier from '../../components/DrawNavigator/Verifier/Verifier';
 import RubixMeeting from '../../components/DrawNavigator/RubixMeeting/RubixMeeting';
 import Lobby from '../../components/DrawNavigator/Lobby/Lobby';
@@ -125,7 +124,6 @@ const HomeScreen = () => {
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Emergency Meeting" component = {Meeting} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Participants" component = {People} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Room Settings" component = {Settings} />
-      <Drawer.Screen options={{drawerItemStyle: { height: 0 }}} name="Phone Verification" component = {Phone} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Verifier" component = {Verifier} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Start Meeting" component = {RubixMeeting} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Lobby" component = {Lobby} />
