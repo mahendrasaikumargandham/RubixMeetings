@@ -2,14 +2,19 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import React from 'react'
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { authentication } from '../../../firebase/firebase-config';
+import LottieView from "lottie-react-native";
 
 const MeetingParticipants = ({
     participants,
     setParticipants,
     name,
     activeUsers,
-    setActiveUsers
+    setActiveUsers,
+    currentUsers,
+    roomId
 }) => {
+    // console.log(currentUsers);
+    console.log(roomId)
   return (
     <View style = {styles.container}>
         <TouchableOpacity 
@@ -28,6 +33,13 @@ const MeetingParticipants = ({
                 placeholderTextColor= "gray"
             />
         </View>
+        <LottieView 
+            style = {{ alignSelf: "center", height: 200 }}
+            source = {require("../../../assets/json/rubix-people.json")}
+            autoPlay
+            loop
+        />
+        <Text style = {styles.peopleList}>Participants</Text>
         <View>
             <Text style = {styles.host}>{authentication.currentUser?.displayName}</Text>
             {activeUsers.map((user, index) => (
@@ -77,5 +89,15 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 10,
         borderRadius: 20,
+    },
+    peopleList: {
+        backgroundColor: "#fff",
+        padding: 10,
+        textAlign: "center",
+        fontSize: 20,
+        fontWeight: "700",
+        margin: 10,
+        borderRadius: 10,
+
     }
 })

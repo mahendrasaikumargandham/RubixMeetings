@@ -1,6 +1,6 @@
 import { Alert, BackHandler, StyleSheet, Text, View } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { Modal, ScrollView, TextInput } from 'react-native';
+import { Modal, ScrollView } from 'react-native';
 import StartMeeting from '../StartMeeting/StartMeeting';
 import { io } from "socket.io-client";
 import { authentication } from "../../../firebase/firebase-config";
@@ -8,27 +8,34 @@ import { Camera, CameraType } from 'expo-camera';
 import { TouchableOpacity } from 'react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
-import { Stopwatch } from 'react-native-stopwatch-timer';
 import Chat from "./../Chat/Chat";
 import MeetingParticipants from '../MeetingParticipants/MeetingParticipants';
+import * as Location from 'expo-location';
+import { LinearGradient } from 'expo-linear-gradient';
 
 let socket; 
 const RubixMeeting = () => {
+    let [currentLocation, setCurrentLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
     const [roomId, setRoomId] = useState();
     const [activeUsers, setActiveUsers] = useState([]);
     const [startCamera, setStartCamera] = useState(false);
     const [type, setType] = useState(CameraType.back);
     const [cameraStatus, setCameraStatus] = useState(false);
     const [micStatus, setMicStatus] = useState(false);
-    const [isStopwatchStart, setIsStopwatchStart] = useState(true);
-    const [resetStopwatch, setResetStopwatch] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [participants, setParticipants] = useState(false);
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState();
     const [messages, setMessages] = useState([]);
     const [isDisabled, setIsDisabled] = useState(false);
     const name = `${authentication.currentUser?.displayName}`;
+    const email = `${authentication.currentUser?.email}`;
     const navigation = useNavigation();
+    let currentUsers = [];
+    let reachedTime = new Date();
+    let hours = (reachedTime.getHours() < 10 ? '0' : '') + reachedTime.getHours();
+    let minutes = (reachedTime.getMinutes() < 10 ? '0' : '') + reachedTime.getMinutes();
+    let time = hours + ':' + minutes;
 
     const _startCamera = async () => {
         const { status } = await Camera.requestCameraPermissionsAsync();
@@ -39,68 +46,59 @@ const RubixMeeting = () => {
         }
     }
 
-    const handleBackPress = () => {
-        Alert.alert(
-            "Rubix Meetings",
-            "Do you want to exit from Meeting?",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => {
-                        console.log("cancel Pressed")
-                    },
-                    style: "cancel"
-                },
-                {
-                    text: "OK",
-                    onPress: () => {
-                        socket.disconnect();
-                        setStartCamera(false); 
-                        navigation.navigate("Lobby");
-                        console.log("OK pressed")
-                    },
-                },
-            ],
-            {
-                cancelable: false,
-            }
-        );
-        return true;
+    (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setErrorMsg('Permission to access location was denied');
+          return;
+        }
+        let currentLocation = await Location.getCurrentPositionAsync({});
+        setCurrentLocation(currentLocation);
+    })();
+
+    if (errorMsg) {
+        currentLocation = errorMsg;
+    } 
+    else if (currentLocation) {
+        currentLocation = JSON.stringify(currentLocation);
     }
+
     useEffect(() => {
-        BackHandler.addEventListener("hardwareBackPress", handleBackPress);
-        socket = io("https://8b32-2409-4070-4808-a36b-f0e9-1629-9aec-a1f6.in.ngrok.io");
+        socket = io("https://5f92-2409-4070-2389-5beb-68b6-8d9e-d688-8982.in.ngrok.io");
         socket.on("connection", () => console.log("Connected"));
         socket.on("all-users", users => {
             users = users.filter(user => (user.userName != name))
             setActiveUsers(users);
-            console.log(users)
         })
-        socket.on("messages", ({ userName: name, message: message}) => {
-            messages.push({ name, message })
-            console.log(messages);
+        socket.on("messages", ({ userName: name, userEmail: email ,message: message, currentLocation: currentLocation, reachedTime: time }) => {  
+            messages.push({ name, message, email, currentLocation, time });
+            setMessages(messages);
         })
     },[])
 
+
     const joinRoom = () => {
         _startCamera();
-        socket.emit("join-room", ({ userName: name, roomId: roomId }));
+        socket.emit("join-room", ({ userName: name, userEmail: email, roomId: roomId, currentLocation: currentLocation, reachedTime: time }));
         setRoomId('');
+        console.log(roomId);
     }
 
     const sendMessage = () => {
         if (message == "" || message == null) {
             setIsDisabled(true);
         }
-        console.log(message)
-        socket.emit("messages", ({ userName: name, message: message}));
+        socket.emit("messages", ({ userName: name, userEmail: email, message: message, currentLocation: currentLocation, reachedTime: time }));
         setMessage('');
     }
 
     const leaveRoom = () => {
         socket.disconnect();
         setStartCamera(false); 
-        navigation.navigate("Lobby");
+        navigation.navigate("Lobby", {
+            messages: messages,
+            currentLocation: currentLocation,
+        });
     }
 
   return (
@@ -122,6 +120,8 @@ const RubixMeeting = () => {
                         name = {name}
                         activeUsers = {activeUsers}
                         setActiveUsers = {setActiveUsers}
+                        currentUsers = {currentUsers}
+
                     />
                 </Modal>
                 <Modal
@@ -141,7 +141,7 @@ const RubixMeeting = () => {
                         sendMessage = {sendMessage}
                         name = {name}
                         messages = {messages}
-                        setMessages = {setMessages}
+                        currentLocation = {currentLocation}
                         isDisabled = {isDisabled}
                         setIsDisabled = {setIsDisabled}
                     />
@@ -186,50 +186,29 @@ const RubixMeeting = () => {
                         <MaterialIcons name = "call-end" size = {30} color = "#fff" />
                     </TouchableOpacity>
                 </View>
-                <View style = {{ flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-                    <View>
-                        <Text style = {styles.shareId}>Meeting ID: {roomId}</Text>
-                    </View>
-                    <View style={styles.sectionStyle}>
-                        <Stopwatch
-                            laps
-                            options={options}
-                            start={isStopwatchStart}
-                            reset={resetStopwatch}
-                        />
-                    </View>
-                </View>
                 <View style = {styles.cameraContainer}>
                     <View>
                         {cameraStatus ? (
-                            <Camera
-                                type={type}
-                                style = {{
-                                    width: 160, 
-                                    height: 190,
-                                }}
-                            ></Camera>
+                            <Camera type={type} style = {{ width: 160, height: 190,}}></Camera>
                         ) : (
-                            <View 
-                                style = {styles.activeUsersContainer}
-                                >
-                                <View style = {styles.text}><Text><MaterialIcons name = "account-circle" size = {100} color = "#fff" /></Text></View>
-                            </View>
+                            <LinearGradient colors={['rgb(0, 89, 178)', '#3b5998', 'rgb(80, 30, 180)']} style = {styles.activeUsersContainer}>
+                                <View style = {styles.text}>
+                                    <Text><MaterialIcons name = "account-circle" size = {100} color = "#fff" /></Text>
+                                </View>
+                            </LinearGradient> 
                         )}
                         <View><Text style = {styles.caption}>You</Text></View>
                     </View>
                     <View style = {styles.members}>
                         {activeUsers.map((activeUser, index) => 
                             <View key = {index} >
-                                <View 
-                                    style = {styles.activeUsersContainer}
-                                    >
+                                <LinearGradient colors={['rgb(0, 89, 178)', '#3b5998', 'rgb(80, 30, 180)']} style = {styles.activeUsersContainer}>
                                     <View style = {styles.text}>
                                         <Text>
                                             <MaterialIcons name = "account-circle" size = {100} color = "#fff" />
                                         </Text>
                                     </View>
-                                </View>
+                                </LinearGradient>
                                 <Text style = {styles.caption}>{activeUser.userName}</Text>
                             </View>
                         )}
@@ -290,7 +269,7 @@ const styles = StyleSheet.create({
         margin: 5,
         borderRadius: 10,
         padding: 20,
-        backgroundColor: "rgb(0, 89, 178)"
+        backgroundColor: "transparent"
     },
     activeUsers: {
         color: "#0c002b",
@@ -327,19 +306,3 @@ const styles = StyleSheet.create({
         fontWeight: "700"
     }
 })
-
-const options = {
-    container: {
-      backgroundColor: '#fff',
-      padding: 5,
-      borderRadius: 10,
-      width: 100,
-      alignItems: 'center',
-      marginRight: 10
-    },
-    text: {
-      fontSize: 15,
-      color: '#0c002b',
-      fontWeight: "700"
-    },
-};

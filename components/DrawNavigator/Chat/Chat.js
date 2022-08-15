@@ -1,7 +1,10 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { authentication } from '../../../firebase/firebase-config';
+import { LinearGradient } from 'expo-linear-gradient';
+import LottieView from "lottie-react-native";
 
 const Chat = ({
     modalVisible, 
@@ -10,30 +13,38 @@ const Chat = ({
     setMessage,
     sendMessage,
     messages,
-    setMessages,
     isDisabled,
-    setIsDisabled
 }) => {
+    const currentUser = `${authentication.currentUser?.email}`;
   return (
     <View style = {styles.container}>
-        <TouchableOpacity 
-            onPress={() => setModalVisible(!modalVisible)}
-            style = {styles.header}
-        >
+        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)} style = {styles.header}>
             <MaterialIcons name = "arrow-back-ios" size = {30} color = "#fff" />
             <Text style = {styles.headerText}>Back</Text>
         </TouchableOpacity>
         <ScrollView style = {{ flex:1 }}>
-            {messages.map((each, index) => (
-                <View key = {index}>
-                    <TouchableOpacity style = {styles.messageBox}>
+            <View>
+                <LottieView 
+                    style = {{ alignSelf: "center", height: 160 }}
+                    source = {require("../../../assets/json/chatting.json")}
+                    autoPlay
+                    loop
+                />
+            </View>
+            {messages.map((each, index) => 
+                <TouchableOpacity key = {index} style = {[styles.messageBox]}>
+                        <Text style = {styles.location}>{each.currentLocation}</Text>
                         <Text style = {styles.users}>~{each.name}</Text>
-                        <Text style = {styles.messages}>{each.message}</Text>
-                    </TouchableOpacity>
-                </View>
-            ))}
+                        <LinearGradient colors={['rgb(0, 89, 178)', '#3b5998', 'rgb(80, 30, 180)']}
+                            style={styles.linearGradient}>
+                            <Text style = {styles.messages}>{each.message}</Text>
+                            <Text style = {styles.timeStamp}>{each.time}</Text>
+                        </LinearGradient>       
+                </TouchableOpacity>
+            )}
         </ScrollView>
-        <View style = {[{ flexDirection: "row", alignItems: "center" }]}>
+        
+        <View style = {{ flexDirection: "row", alignItems: "center" }}>
             <TextInput
                 value = {message}
                 onChangeText = {text => setMessage(text)}
@@ -41,7 +52,7 @@ const Chat = ({
                 placeholder = "Enter message"
                 placeholderTextColor = "gray"
                 onSubmitEditing={() => sendMessage()}
-                style = {[styles.textInput, { borderColor: message ? "rgb(0, 89, 178)": "#fff"}]}
+                style = {[styles.textInput, { borderColor: message ? "rgb(0, 89, 178)": "gray"}]}
             />
             <TouchableOpacity
                 style = {[{ backgroundColor: message ? "rgb(0,89,178)" : "#fff" }, styles.button]}
@@ -89,20 +100,41 @@ const styles = StyleSheet.create({
     },
     users: {
         color: "#fff",
-        fontSize: 13
+        fontSize: 13,
+        fontWeight: "700",
     },
     messages: {
         color: "#fff",
-        fontSize: 20,
-        fontWeight: "800"
-    },
-    messageBox: {
-        backgroundColor: "rgb(0, 89, 178)",
-        margin: 10,
+        fontSize: 18,
         padding: 10,
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
-        borderBottomLeftRadius: 10,
-        width: "60%"
+        fontWeight: "700",
+        backgroundColor: "transparent",
+        flex: 1
+    },
+    messageBox: {
+        margin: 10,
+    },
+    location: {
+        color: "#0c002b",
+        fontSize: 1,   
+    },
+    linearGradient: {
+        borderRadius: 10,
+        marginTop: 5,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    timeStamp: {
+        color: "#fff",
+        fontSize: 12,
+        padding: 10,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        fontWeight: "700",
+        backgroundColor: "transparent",
     }
 })
+
+

@@ -8,6 +8,7 @@ import ForgotPassword from './screens/ForgotPassword/ForgotPassword';
 import Meeting from './components/DrawNavigator/Meeting/Meeting';
 import { Provider as ReduxProvider } from 'react-redux';
 import configureStore from "./redux/store";
+import FingerPrintValidation from './screens/FingerPrintValidation/FingerPrintValidation';
 
 const Stack = createNativeStackNavigator();
 const store = configureStore();
@@ -21,6 +22,7 @@ const App = () => {
           <Stack.Screen options = {{ headerShown: false }} name = "Register" component = {RegisterScreen} />
           <Stack.Screen options = {{ headerShown: false }} name = "ForgotPassword" component = {ForgotPassword} />
           <Stack.Screen options = {{ headerShown: false }} name = "Home" component = {HomeScreen} />
+          <Stack.Screen options = {{ headerShown: false }} name = "FingerPrint" component = {FingerPrintValidation} />
           <Stack.Screen name = "Meeting" component = {Meeting} />
         </Stack.Navigator>
       </NavigationContainer>

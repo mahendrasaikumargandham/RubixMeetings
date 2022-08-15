@@ -3,84 +3,27 @@ import React, { useState, useRef, useEffect } from 'react'
 import { ScrollView, KeyboardAvoidingView, TextInput,TouchableOpacity } from 'react-native';
 import { authentication } from '../../../firebase/firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import * as LocalAuthentication from 'expo-local-authentication';
 import { useNavigation } from '@react-navigation/native';
+import LottieView from "lottie-react-native";
 
-const Verifier = ({ route }) => {
-
-    const [email, setEmail] = useState('');         
+const Verifier = ({ route }) => {        
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
     const emailRef = useRef();
-    const [isFingerPrintSupported, setIsFingerPrintSupported] = useState(false);
-    const { id, className, section, subjectName } = route.params;
-
-    useEffect(() => {
-        (async() => {
-          const compatible = await LocalAuthentication.hasHardwareAsync();
-          setIsFingerPrintSupported(compatible);
-        })();
-    }, []);
-
-    const alertComponent = (title, mess, btnTxt, btnFunc) => {
-        return Alert.alert(title, mess, [
-          {
-            text: btnTxt,
-            onPress: btnFunc
-          }
-        ]);
-    }
-
-    const twoButtonAlert = () => {
-        navigation.navigate("Start Meeting", { 
-            id: id,
-            className: className, 
-            section: section,
-            subjectName: subjectName 
-        })
-    }
-
-    const handleFingerPrintAuth = async () => {
-        const isFingerPrintAvailable = await LocalAuthentication.hasHardwareAsync();
-        if(!isFingerPrintAvailable) {
-          return alertComponent(
-            () => fallBackToDefaultAuth()
-          )
-        }
-    
-        let supportedFingerPrint;
-        if(isFingerPrintAvailable) {
-          supportedFingerPrint = await LocalAuthentication.supportedAuthenticationTypesAsync()
-        }
-        const savedFingerPrint = await LocalAuthentication.isEnrolledAsync();
-        if(!savedFingerPrint) {
-          alertComponent(
-            () => fallBackToDefaultAuth()
-          )
-        }
-    
-        const FingerPrintAuth = await LocalAuthentication.authenticateAsync({
-          promptMessage: "Please Verify your Finger Print ID",
-          disableDeviceFallback: false
-        });
-    
-        if(FingerPrintAuth) {
-          twoButtonAlert();
-        }
-    }
+    const {id, className, subjectName, section } = route.params;
+    const currentEmail = `${authentication.currentUser?.email}`;
 
     const handleLogin = () => {
-        signInWithEmailAndPassword(authentication, email, password)
+        signInWithEmailAndPassword(authentication, currentEmail, password)
         .then(userCredentials => {
             const user = userCredentials.user;
             console.log('Verified as ',user.email);
         })
         .then(() => {
-            setEmail("")
             setPassword("")
         })
         .then(() => {
-            handleFingerPrintAuth();
+            navigation.navigate("FingerPrint")
         })
         .catch(error => alert(error));
     }
@@ -90,21 +33,18 @@ const Verifier = ({ route }) => {
             <Text style = {styles.rubix}>Rubix Verifier</Text>
         </View>
         <View>
-            <Text style = {styles.caption}>Please verify your login credentials to enter the meeting</Text>
+            <LottieView 
+                style = {{ alignSelf: "center", height: 230 }}
+                source = {require("../../../assets/json/verified.json")}
+                autoPlay
+                loop
+            />
         </View>
-        <KeyboardAvoidingView
-            style = {styles.container}
-            behavior = "padding"
-        >
+        <View>
+            <Text style = {styles.caption}>Please verify your credentials to enter the meeting</Text>
+        </View>
+        <KeyboardAvoidingView style = {styles.container} behavior = "padding">
             <View style = {styles.inputContainer}>
-                <TextInput 
-                    placeholder = "Email ID" 
-                    value = {email} 
-                    ref={emailRef}
-                    autoComplete= 'off'
-                    onChangeText = {text => setEmail(text)} 
-                    style = {styles.input}
-                />
                 <TextInput 
                     placeholder = "Password" 
                     value = {password} 
@@ -115,10 +55,7 @@ const Verifier = ({ route }) => {
                 />
             </View>
             <View style = {styles.buttonContainer}>
-                <TouchableOpacity
-                    onPress={() => handleLogin()}
-                    style = {styles.button}
-                >
+                <TouchableOpacity onPress={() => handleLogin()} style = {styles.button}>
                     <Text style = {styles.buttonText}>Verify</Text>
                 </TouchableOpacity> 
                 <TouchableOpacity
@@ -142,7 +79,7 @@ export default Verifier
 
 const styles = StyleSheet.create({
     rubix: {
-        marginTop: "40%",
+        marginTop: "25%",
         fontSize: 30,
         fontWeight: "700",
         textAlign: 'center',
@@ -170,7 +107,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     button: {
-        backgroundColor: '#fff',
+        backgroundColor: 'rgb(0, 89, 178)',
         width: '100%',
         paddingHorizontal: 10,
         paddingVertical: 10,
@@ -185,7 +122,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
     },
     buttonText: {
-        color: '#0c002b',
+        color: '#fff',
         fontWeight: '700',
         fontSize: 16,
     },
@@ -218,7 +155,6 @@ const styles = StyleSheet.create({
     caption: {
         color: "#fff",
         textAlign: "center",
-        marginTop: "10%",
         fontSize: 17,
         margin: 10,
         fontWeight: "600"

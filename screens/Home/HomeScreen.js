@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import 'react-native-gesture-handler';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -22,10 +22,13 @@ import Settings from '../../components/DrawNavigator/RoomSettings/Settings';
 import Verifier from '../../components/DrawNavigator/Verifier/Verifier';
 import RubixMeeting from '../../components/DrawNavigator/RubixMeeting/RubixMeeting';
 import Lobby from '../../components/DrawNavigator/Lobby/Lobby';
+import Logs from '../../components/DrawNavigator/Logs/Logs';
+import FingerPrint from '../../components/DrawNavigator/FingerPrint/FingerPrint';
 
 const Drawer = createDrawerNavigator();
 
 const HomeScreen = () => {
+
   return (
     <Drawer.Navigator 
       useLegacyImplementation
@@ -127,6 +130,8 @@ const HomeScreen = () => {
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Verifier" component = {Verifier} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Start Meeting" component = {RubixMeeting} />
       <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Lobby" component = {Lobby} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="Logs" component = {Logs} />
+      <Drawer.Screen options={{drawerItemStyle: { height: 0 }, headerShown: false}} name="FingerPrint" component = {FingerPrint} />
     </Drawer.Navigator>
   )
 }

@@ -8,7 +8,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
 import LottieView from "lottie-react-native";
-
+import { LinearGradient } from "expo-linear-gradient"
 
 const Classes = () => {
 

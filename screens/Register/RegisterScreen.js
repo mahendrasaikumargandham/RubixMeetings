@@ -20,7 +20,7 @@ const RegisterScreen = () => {
     useEffect(() => {
         const unsubscribe = authentication.onAuthStateChanged(user => {
             if(user) {
-                navigation.replace("Home")
+                navigation.replace("FingerPrint")
             }
         })
         return unsubscribe;
@@ -35,7 +35,8 @@ const RegisterScreen = () => {
             const user = userCredential.user;
             console.log('registered with', user.displayName);
             console.log('Registered with ',user.email); 
-        }).catch(error => alert(error.message));
+        })
+        .catch(error => alert(error.message));
     };
   return (
     <ScrollView style = {styles.main}>

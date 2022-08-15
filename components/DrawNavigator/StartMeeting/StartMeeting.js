@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
 import React from 'react'
 import { KeyboardAvoidingView } from 'react-native'
 import LottieView from "lottie-react-native";
-import { TextInput } from 'react-native-gesture-handler';
 
 const StartMeeting = ({ name, roomId, setRoomId, joinRoom }) => {
   return (
@@ -28,7 +27,6 @@ const StartMeeting = ({ name, roomId, setRoomId, joinRoom }) => {
                     autoComplete= 'off'
                     onChangeText = {text => setRoomId(text)} 
                     style = {styles.input}
-                    secureTextEntry
                 />
             </View>
             <View style = {styles.buttonContainer}>
@@ -105,5 +103,13 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: "700",
         marginTop: "20%"
+    },
+    otp: {
+        backgroundColor: "transparent",
+        borderRadius: 10,
+        borderColor: "#fff",
+        borderWidth: 1,
+        color: "#fff",
+        
     }
 })
