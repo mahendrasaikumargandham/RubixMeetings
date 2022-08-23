@@ -1,5 +1,5 @@
-import { Alert, BackHandler, StyleSheet, Text, View } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { Alert, StyleSheet, Text, View } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
 import { Modal, ScrollView } from 'react-native';
 import StartMeeting from '../StartMeeting/StartMeeting';
 import { io } from "socket.io-client";
@@ -20,7 +20,7 @@ const RubixMeeting = () => {
     const [roomId, setRoomId] = useState();
     const [activeUsers, setActiveUsers] = useState([]);
     const [startCamera, setStartCamera] = useState(false);
-    const [type, setType] = useState(CameraType.back);
+    const [type, setType] = useState(CameraType.front);
     const [cameraStatus, setCameraStatus] = useState(false);
     const [micStatus, setMicStatus] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -28,15 +28,23 @@ const RubixMeeting = () => {
     const [message, setMessage] = useState();
     const [messages, setMessages] = useState([]);
     const [isDisabled, setIsDisabled] = useState(false);
+    const [showMessage, setShowMessage] = useState(true); 
+    const [textColor, setTextColor] = useState('#fff');
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [finalAlert, setFinalAlert] = useState(false);
+    let [count, setCount] = useState(0);
     const name = `${authentication.currentUser?.displayName}`;
     const email = `${authentication.currentUser?.email}`;
+
     const navigation = useNavigation();
     let currentUsers = [];
     let reachedTime = new Date();
     let hours = (reachedTime.getHours() < 10 ? '0' : '') + reachedTime.getHours();
     let minutes = (reachedTime.getMinutes() < 10 ? '0' : '') + reachedTime.getMinutes();
     let time = hours + ':' + minutes;
-
+    let meetingParticipants;
+    let jsonResponse;
+    let responseStr;
     const _startCamera = async () => {
         const { status } = await Camera.requestCameraPermissionsAsync();
         if (status == "granted") {
@@ -64,11 +72,16 @@ const RubixMeeting = () => {
     }
 
     useEffect(() => {
-        socket = io("https://5f92-2409-4070-2389-5beb-68b6-8d9e-d688-8982.in.ngrok.io");
+        socket = io("https://ab1a-2409-4070-208e-7656-8cee-f06a-463c-bc5f.in.ngrok.io");
         socket.on("connection", () => console.log("Connected"));
         socket.on("all-users", users => {
             users = users.filter(user => (user.userName != name))
             setActiveUsers(users);
+            // console.log(users);
+        })
+        socket.on("all-users", meetingParticipants => {
+            meetingParticipants.filter(user => (user.roomId == roomId));
+            // console.log(meetingParticipants[0].roomId);
         })
         socket.on("messages", ({ userName: name, userEmail: email ,message: message, currentLocation: currentLocation, reachedTime: time }) => {  
             messages.push({ name, message, email, currentLocation, time });
@@ -76,22 +89,72 @@ const RubixMeeting = () => {
         })
     },[])
 
-
     const joinRoom = () => {
         _startCamera();
         socket.emit("join-room", ({ userName: name, userEmail: email, roomId: roomId, currentLocation: currentLocation, reachedTime: time }));
         setRoomId('');
-        console.log(roomId);
+        // console.log(name);
+        console.log(activeUsers);
     }
 
-    const sendMessage = () => {
+    function sendMessage() {
         if (message == "" || message == null) {
             setIsDisabled(true);
         }
         socket.emit("messages", ({ userName: name, userEmail: email, message: message, currentLocation: currentLocation, reachedTime: time }));
         setMessage('');
-    }
+        console.log(message);
+        const cars = {
+            text: `${message}`
+        }
+        fetch("http://192.168.43.248:5001/receiver", 
+            {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body:JSON.stringify(cars)}).then(res=>{
+                    if(res.ok) {
+                        return res.json()
+                    } else{
+                        alert("something is wrong at app.py or in this function")
+                    }
+                }
+            ).then((jsonResponse) => {  
+                    // console.log(Object.values(jsonResponse))
+                    if(Object.values(jsonResponse) == "Abusive") {
+                        // setShowMessage(false);
+                        setTextColor('transparent');
+                    } else if(Object.values(jsonResponse) != "Abusive") {
+                        setTextColor('#fff');
+                    }
+                    responseStr = Object.values(jsonResponse);
+                    removeuser(responseStr);
 
+                } 
+            ).catch((err) => console.error(err));   
+    }
+    
+    const removeuser = (response) => {  
+        if(response == "Abusive") {
+            count = count + 1;
+            if (count == 1) {
+                // alert(`You have used abusive word for ${count} time`);
+                setAlertVisible(true);
+            } else if (count == 2) {
+                // alert("This is the last warning. You will be removed out of meeting");
+                setAlertVisible(true);
+            }
+            setCount(count);
+        }
+        console.log(count);
+        if (count > 2) {
+            alert("You have used Abusive words for more than limit of 3 times. You are out from the meeting.")
+            leaveRoom();
+        }
+        return response;    
+    }
     const leaveRoom = () => {
         socket.disconnect();
         setStartCamera(false); 
@@ -100,11 +163,32 @@ const RubixMeeting = () => {
             currentLocation: currentLocation,
         });
     }
-
   return (
     <ScrollView style = {styles.main}>
         {startCamera ? (
             <View style = {styles.container}>
+                <Modal
+                    animationType='fade'
+                    transparent={true}
+                    visible={alertVisible}
+                    presentationStyle={"overFullScreen"}
+                >
+                    <View style = {{ flex: 1}}>
+
+                    </View>
+                    <View style = {styles.modalAlert}>
+                        { (count == 2) ? (
+                            <Text style = {styles.alertText}>This is the last warning. You will be removed out of meeting</Text>
+                        ) : (
+                            <Text style = {styles.alertText}>You have used abusive word for {count} time</Text>
+                        )}
+                        <TouchableOpacity 
+                            onPress = {() => setAlertVisible(!alertVisible)} style = {styles.alertButtons}>
+                            <Text style = {{ flex: 1}}></Text>
+                            <Text style = {styles.alertOk}>Ok</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
                 <Modal
                     animationType='slide'
                     transparent={false}
@@ -121,6 +205,7 @@ const RubixMeeting = () => {
                         activeUsers = {activeUsers}
                         setActiveUsers = {setActiveUsers}
                         currentUsers = {currentUsers}
+                        meetingParticipants = {meetingParticipants}
 
                     />
                 </Modal>
@@ -144,6 +229,8 @@ const RubixMeeting = () => {
                         currentLocation = {currentLocation}
                         isDisabled = {isDisabled}
                         setIsDisabled = {setIsDisabled}
+                        showMessage = {showMessage}
+                        textColor = {textColor}
                     />
                 </Modal>
                 <View style = {styles.menu}>
@@ -186,6 +273,7 @@ const RubixMeeting = () => {
                         <MaterialIcons name = "call-end" size = {30} color = "#fff" />
                     </TouchableOpacity>
                 </View>
+                <View><Text>Meeting ID: {roomId}</Text></View>
                 <View style = {styles.cameraContainer}>
                     <View>
                         {cameraStatus ? (
@@ -304,5 +392,29 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontSize: 17,
         fontWeight: "700"
+    },
+    modalAlert: {
+        backgroundColor: "red",
+        alignSelf: "center",
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: "20%"
+    },
+    alertButtons: {
+        flexDirection: "row",
+    },
+    alertOk: {
+        backgroundColor: "#fff",
+        color: "red",
+        padding: 3,
+        borderRadius: 5,
+        paddingLeft: 7,
+        paddingRight: 7,
+        fontWeight: "800",
+    },
+    alertText: {
+        color: "#fff",
+        fontSize: 17,
+        fontWeight: "800",
     }
 })
