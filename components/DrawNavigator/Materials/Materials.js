@@ -7,14 +7,14 @@ import LottieView from "lottie-react-native";
 const Materials = () => {
   return (
     <View style = {styles.main}>
-      <View>
-            <LottieView 
-                style = {{ height: 200, alignSelf: "center" }}
-                source = {require("../../../assets/json/books.json")}
-                autoPlay
-                loop
-            />
-        </View>
+      {/* <View>
+        <LottieView 
+            style = {{ height: 200, alignSelf: "center" }}
+            source = {require("../../../assets/json/books.json")}
+            autoPlay
+            loop
+        />
+      </View> */}
       <View style = {styles.box}>
         <TouchableOpacity>
           <View style = {styles.content}>

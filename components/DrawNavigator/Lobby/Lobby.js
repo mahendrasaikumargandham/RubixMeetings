@@ -32,14 +32,14 @@ const Lobby = ({ route }) => {
       <View>
         <Text style = {styles.heading}>Rubix Lobby</Text>
       </View>
-      <View>
+      {/* <View>
         <LottieView 
             style = {{ alignSelf: "center", height: 200 }}
             source = {require("../../../assets/json/lobby.json")}
             autoPlay
             loop
         />
-      </View>
+      </View> */}
       <View>
         <Text style = {styles.message}>The call has ended</Text>
         <LinearGradient colors={['rgb(0, 89, 178)', '#3b5998', 'rgb(80, 30, 180)']} style = {styles.button}>

@@ -12,14 +12,14 @@ const StartMeeting = ({ name, roomId, setRoomId, joinRoom }) => {
         <View>
             <Text style = {styles.heading}>Start Meeting</Text>
         </View>
-        <View>
+        {/* <View>
             <LottieView 
                 style = {{ height: 200, alignSelf: "center"}}
                 source = {require("../../../assets/json/startmeeting.json")}
                 autoPlay
                 loop
             />
-        </View>
+        </View> */}
             <View style = {styles.inputContainer}>
                 <TextInput 
                     placeholder = "Meeting ID" 
@@ -27,6 +27,7 @@ const StartMeeting = ({ name, roomId, setRoomId, joinRoom }) => {
                     autoComplete= 'off'
                     onChangeText = {text => setRoomId(text)} 
                     style = {styles.input}
+                    secureTextEntry
                 />
             </View>
             <View style = {styles.buttonContainer}>

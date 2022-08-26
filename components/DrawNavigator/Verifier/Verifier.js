@@ -23,7 +23,7 @@ const Verifier = ({ route }) => {
             setPassword("")
         })
         .then(() => {
-            navigation.navigate("FingerPrint")
+            navigation.navigate("Start Meeting");
         })
         .catch(error => alert(error));
     }
@@ -32,14 +32,14 @@ const Verifier = ({ route }) => {
         <View> 
             <Text style = {styles.rubix}>Rubix Verifier</Text>
         </View>
-        <View>
+        {/* <View>
             <LottieView 
                 style = {{ alignSelf: "center", height: 230 }}
                 source = {require("../../../assets/json/verified.json")}
                 autoPlay
                 loop
             />
-        </View>
+        </View> */}
         <View>
             <Text style = {styles.caption}>Please verify your credentials to enter the meeting</Text>
         </View>

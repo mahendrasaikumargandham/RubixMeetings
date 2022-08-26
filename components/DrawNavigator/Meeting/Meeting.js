@@ -79,14 +79,14 @@ const Meeting = () => {
                  <View> 
                     <Text style = {styles.rubix}>Rubix Meetings</Text>
                 </View>
-                <View>
+                {/* <View>
                     <LottieView 
                         style = {{ height: 200, alignSelf: "center"}}
                         source = {require("../../../assets/json/meet.json")}
                         autoPlay
                         loop
                     />
-                </View>
+                </View> */}
                     <View style = {styles.inputContainer}>
                         <TextInput 
                             placeholder = "Room Name" 

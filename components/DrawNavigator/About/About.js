@@ -12,14 +12,14 @@ const About = () => {
         <View>
             <Text style = {styles.head}>Rubix Coders</Text>
         </View>
-        <View>
+        {/* <View>
             <LottieView 
                 style = {{ height: 200, alignSelf: "center" }}
                 source = {require("../../../assets/json/about.json")}
                 autoPlay
                 loop
             />
-        </View>
+        </View> */}
         <View style = {styles.team}>
             <Text style = {styles.name}>Akhila Reddy Biyyam</Text>
             <View style = {styles.items}>

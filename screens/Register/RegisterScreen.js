@@ -20,7 +20,7 @@ const RegisterScreen = () => {
     useEffect(() => {
         const unsubscribe = authentication.onAuthStateChanged(user => {
             if(user) {
-                navigation.replace("FingerPrint")
+                navigation.replace("Home")
             }
         })
         return unsubscribe;
@@ -43,14 +43,14 @@ const RegisterScreen = () => {
         <View> 
             <Text style = {styles.rubix}>Rubix Meetings</Text>
         </View>
-        <View>
+        {/* <View>
             <LottieView 
                 style = {styles.lottie}
                 source = {require("../../assets/json/register.json")}
                 autoPlay
                 loop
             />
-        </View>
+        </View> */}
         <KeyboardAvoidingView
             style = {styles.container}
             behavior = "padding"

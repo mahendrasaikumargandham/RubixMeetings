@@ -63,14 +63,14 @@ const FingerPrintValidation = () => {
         <View>
             <Text style = {styles.rubix}>Rubix Meetings</Text>
         </View>
-      <View>
+      {/* <View>
         <LottieView 
             style = {{ alignSelf: "center", height: 250 }}
             source = {require("../../assets/json/fingerprint.json")}
             autoPlay
             loop
         />
-      </View>
+      </View> */}
       <View>
         <TouchableOpacity onPress = {() => handleFingerPrintAuth()}>
             <Text style = {styles.fingerPrint}>Verify FingerPrint</Text>

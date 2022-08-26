@@ -12,6 +12,7 @@ import Chat from "./../Chat/Chat";
 import MeetingParticipants from '../MeetingParticipants/MeetingParticipants';
 import * as Location from 'expo-location';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Network from 'expo-network';
 
 let socket; 
 const RubixMeeting = () => {
@@ -31,20 +32,22 @@ const RubixMeeting = () => {
     const [showMessage, setShowMessage] = useState(true); 
     const [textColor, setTextColor] = useState('#fff');
     const [alertVisible, setAlertVisible] = useState(false);
-    const [finalAlert, setFinalAlert] = useState(false);
+    const [getResponse, setGetResponse] = useState(0);
     let [count, setCount] = useState(0);
+    let [ipAddress, setIpAddress] = useState('');
     const name = `${authentication.currentUser?.displayName}`;
     const email = `${authentication.currentUser?.email}`;
 
     const navigation = useNavigation();
     let currentUsers = [];
-    let reachedTime = new Date();
-    let hours = (reachedTime.getHours() < 10 ? '0' : '') + reachedTime.getHours();
-    let minutes = (reachedTime.getMinutes() < 10 ? '0' : '') + reachedTime.getMinutes();
-    let time = hours + ':' + minutes;
     let meetingParticipants;
     let jsonResponse;
-    let responseStr;
+
+
+    let latitude;
+    let longitude;
+    let timeStamp;
+    let address;
     const _startCamera = async () => {
         const { status } = await Camera.requestCameraPermissionsAsync();
         if (status == "granted") {
@@ -60,7 +63,9 @@ const RubixMeeting = () => {
           setErrorMsg('Permission to access location was denied');
           return;
         }
-        let currentLocation = await Location.getCurrentPositionAsync({});
+        address = await Network.getIpAddressAsync();
+        setIpAddress(address)
+        currentLocation = await Location.getCurrentPositionAsync({});
         setCurrentLocation(currentLocation);
     })();
 
@@ -69,45 +74,53 @@ const RubixMeeting = () => {
     } 
     else if (currentLocation) {
         currentLocation = JSON.stringify(currentLocation);
+        currentLocation = JSON.parse(currentLocation);
+        latitude = JSON.stringify(currentLocation.coords.latitude);
+        longitude = JSON.stringify(currentLocation.coords.longitude);
+        timeStamp = parseInt(JSON.stringify(currentLocation.timestamp));
+        var date = new Date(timeStamp);
+        timeStamp = (date.getDate()+
+            "/"+(date.getMonth()+1)+
+            "/"+date.getFullYear()+
+            " "+date.getHours()+
+            ":"+date.getMinutes()+
+            ":"+date.getSeconds()
+        );
+
     }
 
     useEffect(() => {
-        socket = io("https://ab1a-2409-4070-208e-7656-8cee-f06a-463c-bc5f.in.ngrok.io");
+        socket = io("http://localhost:3000");
         socket.on("connection", () => console.log("Connected"));
         socket.on("all-users", users => {
             users = users.filter(user => (user.userName != name))
             setActiveUsers(users);
-            // console.log(users);
         })
         socket.on("all-users", meetingParticipants => {
             meetingParticipants.filter(user => (user.roomId == roomId));
-            // console.log(meetingParticipants[0].roomId);
         })
-        socket.on("messages", ({ userName: name, userEmail: email ,message: message, currentLocation: currentLocation, reachedTime: time }) => {  
-            messages.push({ name, message, email, currentLocation, time });
+        socket.on("messages", ({ userName: name, userEmail: email ,message: message, latitude: latitude, longitude: longitude, ipAddress: ipAddress, timeStamp: timeStamp }) => {  
+            messages.push({ name, message, email, latitude, longitude, ipAddress, timeStamp });
             setMessages(messages);
         })
     },[])
 
     const joinRoom = () => {
         _startCamera();
-        socket.emit("join-room", ({ userName: name, userEmail: email, roomId: roomId, currentLocation: currentLocation, reachedTime: time }));
+        socket.emit("join-room", ({ userName: name, userEmail: email, roomId: roomId, latitude: latitude, longitude: longitude, timeStamp: timeStamp }));
         setRoomId('');
-        // console.log(name);
-        console.log(activeUsers);
     }
 
     function sendMessage() {
         if (message == "" || message == null) {
             setIsDisabled(true);
         }
-        socket.emit("messages", ({ userName: name, userEmail: email, message: message, currentLocation: currentLocation, reachedTime: time }));
+        socket.emit("messages", ({ userName: name, userEmail: email, message: message, latitude: latitude, longitude: longitude, timeStamp: timeStamp, ipAddress: ipAddress }));
         setMessage('');
-        console.log(message);
         const cars = {
             text: `${message}`
         }
-        fetch("http://192.168.43.248:5001/receiver", 
+        fetch("http://192.168.50.248:5001/receiver", 
             {
                 method: 'POST',
                 headers: {
@@ -122,35 +135,37 @@ const RubixMeeting = () => {
                     }
                 }
             ).then((jsonResponse) => {  
-                    // console.log(Object.values(jsonResponse))
                     if(Object.values(jsonResponse) == "Abusive") {
-                        // setShowMessage(false);
+                        setShowMessage(false)
+                        setGetResponse(1);
                         setTextColor('transparent');
-                    } else if(Object.values(jsonResponse) != "Abusive") {
+                    }
+                    else {
+                        setShowMessage(true);
+                        setGetResponse(0);
                         setTextColor('#fff');
                     }
                     responseStr = Object.values(jsonResponse);
                     removeuser(responseStr);
-
                 } 
-            ).catch((err) => console.error(err));   
+            ).catch((err) => console.error(err)
+        );
     }
     
     const removeuser = (response) => {  
         if(response == "Abusive") {
+            console.log(response)
             count = count + 1;
             if (count == 1) {
-                // alert(`You have used abusive word for ${count} time`);
                 setAlertVisible(true);
             } else if (count == 2) {
-                // alert("This is the last warning. You will be removed out of meeting");
                 setAlertVisible(true);
             }
             setCount(count);
         }
         console.log(count);
         if (count > 2) {
-            alert("You have used Abusive words for more than limit of 3 times. You are out from the meeting.")
+            alert("You have used Abusive words for more than limit of 2 times. You are out from the meeting.")
             leaveRoom();
         }
         return response;    
@@ -160,7 +175,6 @@ const RubixMeeting = () => {
         setStartCamera(false); 
         navigation.navigate("Lobby", {
             messages: messages,
-            currentLocation: currentLocation,
         });
     }
   return (
@@ -231,6 +245,7 @@ const RubixMeeting = () => {
                         setIsDisabled = {setIsDisabled}
                         showMessage = {showMessage}
                         textColor = {textColor}
+                        setShowMessage = {setShowMessage}
                     />
                 </Modal>
                 <View style = {styles.menu}>
@@ -273,7 +288,7 @@ const RubixMeeting = () => {
                         <MaterialIcons name = "call-end" size = {30} color = "#fff" />
                     </TouchableOpacity>
                 </View>
-                <View><Text>Meeting ID: {roomId}</Text></View>
+                <View><Text style = {{ color: "transparent"}}>Meeting ID: {roomId}</Text></View>
                 <View style = {styles.cameraContainer}>
                     <View>
                         {cameraStatus ? (

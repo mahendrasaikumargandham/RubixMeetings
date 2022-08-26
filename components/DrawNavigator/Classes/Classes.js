@@ -59,14 +59,14 @@ const Classes = () => {
               <Text style = {styles.buttons}>Join Room</Text>
             </TouchableOpacity> 
           </View>
-          <View>
+          {/* <View>
             <LottieView 
               style = {{ alignSelf: "center", height: 200 }}
               source = {require("../../../assets/json/classes.json")}
               autoPlay
               loop
             />
-          </View>
+          </View> */}
           <View style = {{ alignItems: "center", marginTop: 10 }}></View>
             {info.map((item, index) => (
               <TouchableOpacity

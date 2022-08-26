@@ -69,14 +69,14 @@ const JoinClass = () => {
             style = {styles.container}
             behavior = "padding"
         >
-            <View>
+            {/* <View>
                 <LottieView 
                     style = {{ height: 180, alignSelf: "center" }}
                     source = {require("../../../assets/json/join.json")}
                     autoPlay
                     loop
                 />
-            </View>
+            </View> */}
             <View style = {styles.inputContainer}>
                 <TextInput 
                     placeholder = "Room Code" 

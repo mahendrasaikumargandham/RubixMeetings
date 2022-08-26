@@ -33,12 +33,12 @@ const MeetingParticipants = ({
                 placeholderTextColor= "gray"
             />
         </View>
-        <LottieView 
+        {/* <LottieView 
             style = {{ alignSelf: "center", height: 200 }}
             source = {require("../../../assets/json/rubix-people.json")}
             autoPlay
             loop
-        />
+        /> */}
         <Text style = {styles.peopleList}>Participants</Text>
         <View>
             <Text style = {styles.host}>{authentication.currentUser?.displayName}</Text>

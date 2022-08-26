@@ -18,7 +18,7 @@ const LoginScreen = () => {
     useEffect(() => {
         const unsubscribe = authentication.onAuthStateChanged(user => {
             if(user) {
-                navigation.replace("FingerPrint")
+                navigation.replace("Home")
             }
         })
         return unsubscribe;
@@ -45,14 +45,14 @@ const LoginScreen = () => {
         <View> 
             <Text style = {styles.rubix}>Rubix Meetings</Text>
         </View>
-        <View>
+        {/* <View>
             <LottieView 
                 style = {styles.lottie}
                 source = {require('../../assets/json/login.json')}
                 autoPlay
                 loop
             />
-        </View>
+        </View> */}
         <KeyboardAvoidingView
             style = {styles.container}
             behavior = "padding"

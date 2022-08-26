@@ -83,14 +83,14 @@ const People = ({route}) => {
         </View>
       </View>
       <Text style = {styles.note}>Only creator of the Room can access the participants list</Text>
-      <View>
+      {/* <View>
         <LottieView 
           style = {{ height: 250, alignSelf: "center"}}
           source = {require("../../../assets/json/participants.json")}
           autoPlay
           loop
         />
-      </View>
+      </View> */}
       <View>
             
           <Text style = {styles.list}>Participants</Text>

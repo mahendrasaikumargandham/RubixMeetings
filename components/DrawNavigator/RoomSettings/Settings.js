@@ -107,14 +107,14 @@ const Settings = ({route}) => {
         </TouchableOpacity>
       </View>
     </View>
-    <View>
+    {/* <View>
         <LottieView 
             style = {{ alignSelf: "center", height: 100 }}
             source = {require("../../../assets/json/update.json")}
             autoPlay
             loop
         />
-    </View>
+    </View> */}
     <View style = {styles.heading}>
         <Text style = {styles.updateHeading}>Update Room</Text>
         <MaterialIcons name = "edit" size = {27} color = "#fff" />

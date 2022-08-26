@@ -3,8 +3,69 @@ import React from 'react'
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import LottieView from "lottie-react-native";
 import { LinearGradient } from 'expo-linear-gradient';
+import { printToFileAsync } from 'expo-print';
+import { shareAsync } from 'expo-sharing';
+import { authentication } from '../../../firebase/firebase-config';
+// import { useEffect } from 'react';
+
+let locationParams = [];
+let isCreateHtml = false;
+let isOpenBrowse = false;
+let isGetUrl = false;
+
 
 const Logs = ({ modalVisible, setModalVisible, messages, currentLocation }) => {
+
+    let messageList = [];
+    for (let i=0;i<messages.length;i++) {
+        messageList = messageList + "\n" + "Email ID: " + messages[i].email + "\n" + "Latitude: " +messages[i].latitude+ "\n" + "Longitude: " +messages[i].longitude+ "\n"  + "UserName: " +messages[i].name + "\n" + "Message: " +messages[i].message + "TimeStamp: " +messages[i].timeStamp + "\n\n";
+    }
+    console.log(messageList)
+    const html = `
+        <html>
+            <body>
+                <h1>Hello, ${authentication.currentUser.displayName} </h1>
+                <h2>Your log is ready!</h2>
+                <h2>Total Messages sent in the session: ${messages.length}</h2>
+                <h3>${messageList}</h3>
+            </body>
+        </html>
+    `;
+
+    const generateToPdf = async () => {
+        const file = await printToFileAsync({
+            html: html,
+            base64: false,
+        });
+
+        await shareAsync(file.uri);
+    }
+
+    const geomap = () => {
+        locationParams = [messages["latitude"], messages["longitude"]];
+        const cars = {
+            "createHtml": [true, locationParams],
+            "openBrowse": [true],
+            "grtUrl"    : [true], 
+
+        };
+        fetch("http://192.168.137.47:5001/recei", 
+            {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body:JSON.stringify(cars)}).then(res=>{
+                    if(res.ok) {
+                        return res.json()
+                    } else{
+                        alert("something is wrong at app.py or in this function")
+                    }
+                }
+            ).catch((err) => console.error(err)
+        )};
+
   return (
     <View style = {styles.container}>
         <TouchableOpacity 
@@ -19,15 +80,21 @@ const Logs = ({ modalVisible, setModalVisible, messages, currentLocation }) => {
             <Text style = {styles.headerText}>Back</Text> 
         </TouchableOpacity>
         <ScrollView>
-            <View>
+            {/* <View>
                 <LottieView 
                     style = {{ alignSelf: "center", height: 200 }}
                     source = {require("../../../assets/json/logs.json")}
                     autoPlay
                     loop
                 />
+            </View> */}
+            <View>
+                <TouchableOpacity
+                    onPress = {() => generateToPdf()}
+                >
+                    <Text style = {styles.export}>Export Log</Text>
+                </TouchableOpacity>
             </View>
-            <Text style = {styles.log}>Messages Log</Text>
             {messages.map((item, index) => 
                 <LinearGradient  key = {index} colors={['rgb(0, 89, 178)', '#3b5998', 'rgb(80, 30, 180)']} style={styles.box}>
                         <TouchableOpacity style = {styles.mailID}>
@@ -41,11 +108,22 @@ const Logs = ({ modalVisible, setModalVisible, messages, currentLocation }) => {
                             }
                         >
                             <MaterialIcons name = "location-on" size = {30} />
-                            <Text style = {styles.location}>
-                                {/* {item.currentLocation.slice(110, 120)} {item.currentLocation.slice(143, 153)} */}
-                                {item.currentLocation}
-                            </Text>
+                            <View>
+                                <Text style = {styles.location}>
+                                    • Latitude: {JSON.stringify(item.latitude)}
+                                </Text>
+                                <Text style = {styles.location}>
+                                    • Longitude: {JSON.stringify(item.longitude)}
+                                </Text>
+                                <Text style = {styles.location}>
+                                    • At Time: {JSON.stringify(item.timeStamp)}
+                                </Text>
+                            </View>
                         </TouchableOpacity>
+                        <View style = {styles.nameID}>
+                            <MaterialIcons name = "home" size = {30} />
+                            <Text style = {styles.name}>{item.ipAddress}</Text>
+                        </View>
                         <View style = {styles.nameID}>
                             <MaterialIcons name = "person" size = {30} />
                             <Text style = {styles.name}>{item.name}</Text>
@@ -137,5 +215,15 @@ const styles = StyleSheet.create({
     name: {
         marginLeft: 5,
         fontWeight: "700"
+    },
+    export: {
+        alignSelf: "center",
+        color: "#0c002b",
+        margin: 10,
+        backgroundColor: "#fff",
+        fontSize: 17,
+        padding: 10,
+        fontWeight: "700",
+        borderRadius: 10,
     }
 })

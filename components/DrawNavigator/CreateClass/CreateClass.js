@@ -51,14 +51,14 @@ const CreateClass = () => {
             style = {styles.container}
             behavior = "padding"
         >
-            <View>
+            {/* <View>
                 <LottieView 
                     style = {{ height: 170, alignSelf: "center" }}
                     source = {require("../../../assets/json/create.json")}
                     autoPlay
                     loop
                 />
-            </View>
+            </View> */}
             <View style = {styles.inputContainer}>
                 <TextInput 
                     placeholder = "Room Name" 

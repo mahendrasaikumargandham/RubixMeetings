@@ -9,18 +9,18 @@ const DashBoard = () => {
         navigation.navigate("Rooms");
     }
     const handleMeeting = () => {
-        navigation.navigate("Emergency Meeting");
+        navigation.navigate("Start Meeting");
     }
     return (
         <View style = {styles.container}>
-            <View>
+            {/* <View>
                 <LottieView 
                     style = {styles.image}
                     source = {require('../../../assets/json/dashboard.json')}
                     autoPlay 
                     loop
                 />
-            </View>
+            </View> */}
             <Text style = {styles.caption}>The top tier online video conferencing app</Text>
             <View style = {styles.meeting}>
                 <TouchableOpacity  onPress = {handleRooms}>
@@ -29,7 +29,7 @@ const DashBoard = () => {
             </View>
             <View style = {styles.rooms}>
                 <TouchableOpacity onPress = {handleMeeting}>
-                    <Text style = {styles.text2}>Emergency Meeting</Text>
+                    <Text style = {styles.text2}>General Meeting</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -82,14 +82,14 @@ const Server = ({route}) => {
         <MaterialIcons name = "share" size = {25} color = "#0c002b" />
         <Text style = {styles.textCode}>Share Code</Text> 
       </TouchableOpacity>
-      <View style = "lottieView">
+      {/* <View style = "lottieView">
         <LottieView 
           style = {styles.lottie}
           source = {require("../../../assets/json/server.json")}
           autoPlay
           loop
         />
-      </View>
+      </View> */}
       <View style = {styles.view}>
         <TouchableOpacity 
           style = {styles.start}

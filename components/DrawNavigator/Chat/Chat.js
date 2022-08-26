@@ -14,6 +14,8 @@ const Chat = ({
     sendMessage,
     messages,
     isDisabled,
+    textColor,
+    showMessage
 }) => {
     const currentUser = `${authentication.currentUser?.email}`;
   return (
@@ -23,24 +25,30 @@ const Chat = ({
             <Text style = {styles.headerText}>Back</Text>
         </TouchableOpacity>
         <ScrollView style = {{ flex:1 }}>
-            <View>
+            {/* <View>
                 <LottieView 
                     style = {{ alignSelf: "center", height: 160 }}
                     source = {require("../../../assets/json/chatting.json")}
                     autoPlay
                     loop
                 />
-            </View>
+            </View> */}
             {messages.map((each, index) => 
-                <TouchableOpacity key = {index} style = {[styles.messageBox]}>
-                        <Text style = {styles.location}>{each.currentLocation}</Text>
-                        <Text style = {styles.users}>~{each.name}</Text>
-                        <LinearGradient colors={['rgb(0, 89, 178)', '#3b5998', 'rgb(80, 30, 180)']}
-                            style={styles.linearGradient}>
-                            <Text style = {styles.messages}>{each.message}</Text>
-                            <Text style = {styles.timeStamp}>{each.time}</Text>
-                        </LinearGradient>       
-                </TouchableOpacity>
+                <View key = {index}>
+                    { showMessage ? (
+                        <TouchableOpacity style = {[styles.messageBox, { color: textColor }]}>
+                            <Text style = {styles.location}>{each.currentLocation}</Text>
+                            <Text style = {styles.users}>~{each.name}</Text>
+                            <LinearGradient colors={['rgb(0, 89, 178)', '#3b5998', 'rgb(80, 30, 180)']}
+                                style={styles.linearGradient}>
+                                <Text style = {[styles.messages, { color: "#fff" }]}>{each.message}</Text>
+                                <Text style = {styles.timeStamp}>{each.timeStamp}</Text>
+                            </LinearGradient>     
+                        </TouchableOpacity>
+                    ): (
+                        null
+                    )}
+                </View>
             )}
         </ScrollView>
         
@@ -104,7 +112,7 @@ const styles = StyleSheet.create({
         fontWeight: "700",
     },
     messages: {
-        color: "#fff",
+        // color: "#fff",
         fontSize: 18,
         padding: 10,
         borderTopRightRadius: 10,

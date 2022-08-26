@@ -22,14 +22,14 @@ const ForgotPassword = () => {
         <View> 
             <Text style = {styles.rubix}>Rubix Meetings</Text>
         </View>
-        <View>
+        {/* <View>
             <LottieView 
                 style = {{ alignSelf: "center", height: 200}}
                 source = {require("../../assets/json/forgot.json")}
                 autoPlay
                 loop
             />
-        </View>
+        </View> */}
         <KeyboardAvoidingView
             style = {styles.container}
             behavior = "padding"
